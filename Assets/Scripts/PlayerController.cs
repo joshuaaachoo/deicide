@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour
     {
         if (healthBarFill != null)
         {
-            float pct = currentHealth / maxHealth;
+            float pct = (float)currentHealth / maxHealth;
             healthBarFill.fillAmount = pct;
             healthBarFill.color = Color.Lerp(lowHealthColor, fullHealthColor, pct);
         }

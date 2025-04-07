@@ -29,7 +29,7 @@ public class HealthManager : MonoBehaviour
     {
         if (healthBar != null)
         {
-            healthBar.fillAmount = currentHealth / maxHealth;
+            healthBar.fillAmount = (float) currentHealth / maxHealth;
         }
     }
     

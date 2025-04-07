@@ -890,7 +890,7 @@ GameObject:
   - component: {fileID: 884271140}
   - component: {fileID: 884271139}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -935,11 +935,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -1075,7 +1075,7 @@ GameObject:
   - component: {fileID: 1039305295}
   - component: {fileID: 1039305294}
   m_Layer: 5
-  m_Name: HealthBar
+  m_Name: HealthBarBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1115,7 +1115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
-  healthBar: {fileID: 1039305295}
+  healthBar: {fileID: 884271139}
 --- !u!114 &1039305295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1136,11 +1136,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -1498,7 +1498,6 @@ GameObject:
   - component: {fileID: 1812179021}
   - component: {fileID: 1812179020}
   - component: {fileID: 1812179018}
-  - component: {fileID: 1812179024}
   - component: {fileID: 1812179026}
   - component: {fileID: 1812179025}
   m_Layer: 0
@@ -1529,10 +1528,10 @@ MonoBehaviour:
   mouseSensitivity: 4
   cameraTransform: {fileID: 330585546}
   controller: {fileID: 1812179025}
-  abilities: {fileID: 0}
+  abilities: {fileID: 1812179026}
   maxHealth: 100
   currentHealth: 0
-  healthBarFill: {fileID: 1039305295}
+  healthBarFill: {fileID: 884271139}
   fullHealthColor: {r: 0, g: 1, b: 0, a: 1}
   lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
   knockbackForce: 10
@@ -1631,28 +1630,6 @@ Transform:
   - {fileID: 786374194}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1812179024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1812179017}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 919ecaa9c7bc94d08a291e975cd77a3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  healthBarFill: {fileID: 884271139}
-  healthBarBackground: {fileID: 1039305295}
-  healthText: {fileID: 0}
-  fullHealthColor: {r: 0, g: 1, b: 0, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
-  lowHealthThreshold: 0
-  smoothHealthBar: 0
-  smoothSpeed: 10
 --- !u!143 &1812179025
 CharacterController:
   m_ObjectHideFlags: 0
