@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public Transform cameraTransform;
     public CharacterController controller;
     public StratusAbilities abilities; // ✅ Reference to tether logic
+    // public List<AbilityHolder> abilities = new List<AbilityHolder>(3); // 0 1 2 = 2ndFire Mobi Misc respectively
 
     [Header("Health Settings")]
     public float maxHealth = 100f;
