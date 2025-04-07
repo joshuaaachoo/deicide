@@ -10,11 +10,21 @@ public class PlayerController : MonoBehaviour
     public Image[] tetherChargeIcons;
 
     [Header("Movement Settings")]
-    public float walkSpeed = 5f;
-    public float runSpeed = 10f;
-    public float jumpForce = 8f;
+    public float walkSpeed = 15f;
+    public float dashMultiplier;
+    public float dashTime;
+    public float dashCoolDown;
+    public float jumpForce = 13f;
     public float gravity = -20f;
     public float mouseSensitivity = 2f;
+
+    enum DashState
+    {
+        ready, // can be used
+        active, // is being used
+        cooldown // can't be used
+    }
+    DashState state = DashState.ready;
 
     [Header("References")]
     public Transform cameraTransform;
@@ -104,8 +114,7 @@ public class PlayerController : MonoBehaviour
     {
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float speed = isRunning ? runSpeed : walkSpeed;
+        float speed = walkSpeed;
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         move = move.normalized * speed;
@@ -126,6 +135,36 @@ public class PlayerController : MonoBehaviour
         move.y = verticalVelocity;
 
         controller.Move(move * Time.deltaTime);
+
+        // Dashing
+        switch(state)
+        {
+            case DashState.ready:
+                if (Input.GetKeyDown(KeyCode.LeftShift))
+                {
+                    // use dash + make it active
+                    Vector3 dashVector = new Vector3(moveX * dashMultiplier, 0, moveZ * dashMultiplier);
+                    controller.Move(dashVector * dashTime);
+                    state = DashState.active;
+                    dashTime = 0.2f;
+                }
+                break;
+            case DashState.active:
+                if (dashTime > 0) { dashTime -= Time.deltaTime; }
+                else
+                {
+                    state = DashState.cooldown;
+                    dashCoolDown = 0.3f;
+                }
+                break;
+            case DashState.cooldown: // this could also be default
+                if (dashCoolDown > 0) { dashCoolDown -= Time.deltaTime; }
+                else
+                {
+                    state = DashState.ready;
+                }
+                break;
+        }
     }
 
     void ToggleCursorLock()

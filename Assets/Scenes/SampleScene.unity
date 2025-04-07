@@ -1521,9 +1521,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tetherBar: {fileID: 0}
   tetherChargeIcons: []
-  walkSpeed: 5
-  runSpeed: 10
-  jumpForce: 5
+  walkSpeed: 15
+  dashMultiplier: 0
+  dashTime: 0
+  dashCoolDown: 0
+  jumpForce: 15
   gravity: -20
   mouseSensitivity: 4
   cameraTransform: {fileID: 330585546}
@@ -1803,6 +1805,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1781954546109364098, guid: 48ba18c05835d4c4884554355910a2e5, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1781954546109364098, guid: 48ba18c05835d4c4884554355910a2e5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 128bc3e73f41440deb8ca52857043f6b, type: 2}
+    - target: {fileID: 1781954546109364098, guid: 48ba18c05835d4c4884554355910a2e5, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 3396544594227010481, guid: 48ba18c05835d4c4884554355910a2e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.64
