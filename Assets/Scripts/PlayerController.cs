@@ -1,214 +1,215 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("UI")]
+    public Image tetherBar;
+    public Image[] tetherChargeIcons;
+
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
-    public float jumpForce = 5f;
+    public float jumpForce = 8f;
+    public float gravity = -20f;
     public float mouseSensitivity = 2f;
-    
+
     [Header("References")]
     public Transform cameraTransform;
-    
+    public CharacterController controller;
+    public StratusAbilities abilities; // ✅ Reference to tether logic
+
     [Header("Health Settings")]
     public float maxHealth = 100f;
     public float currentHealth;
-    public UnityEngine.UI.Image healthBarFill;
+    public Image healthBarFill;
     public Color fullHealthColor = Color.green;
     public Color lowHealthColor = Color.red;
-    
+
     [Header("Knockback Settings")]
     public float knockbackForce = 10f;
     public float knockbackDuration = 0.25f;
-    
-    private Rigidbody rb;
+
+    private float verticalVelocity;
     private float verticalLookRotation;
-    private bool isGrounded;
-    private Vector3 moveDirection;
     private bool isDead = false;
     private bool isKnockedBack = false;
     private float knockbackTimer = 0f;
-    
+    private Vector3 knockbackVelocity;
+
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        
-        // Lock and hide cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
-        // Find camera if not assigned
+
         if (cameraTransform == null)
         {
             Camera cam = GetComponentInChildren<Camera>();
-            if (cam != null)
-                cameraTransform = cam.transform;
+            if (cam != null) cameraTransform = cam.transform;
         }
-        
-        // Initialize health
+
+        if (controller == null)
+        {
+            controller = GetComponent<CharacterController>();
+        }
+
         currentHealth = maxHealth;
         UpdateHealthBar();
     }
-    
+
     void Update()
     {
-        // Don't process input if player is dead
         if (isDead) return;
-        
-        // Handle knockback timer
+
         if (isKnockedBack)
         {
             knockbackTimer -= Time.deltaTime;
+            controller.Move(knockbackVelocity * Time.deltaTime);
             if (knockbackTimer <= 0)
             {
                 isKnockedBack = false;
             }
-            return; // Skip regular movement while knocked back
+            return;
         }
-        
-        // Check if grounded
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
-        
-        // Handle mouse look
+
         HandleMouseLook();
-        
-        // Get movement input
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        
-        // Determine if running
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float currentSpeed = isRunning ? runSpeed : walkSpeed;
-        
-        // Calculate move direction relative to where we're looking
-        moveDirection = (transform.forward * vertical + transform.right * horizontal).normalized;
-        moveDirection *= currentSpeed;
-        
-        // Handle jumping
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-        
-        // Toggle cursor lock with Escape key
+        HandleMovement();
+        UpdateTetherUI(); // ✅ Call UI update every frame
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleCursorLock();
         }
     }
-    
-    void FixedUpdate()
-    {
-        // Skip regular movement during knockback
-        if (isKnockedBack || isDead) return;
-        
-        // Apply movement
-        rb.linearVelocity = new Vector3(moveDirection.x, rb.linearVelocity.y, moveDirection.z);
-    }
-    
+
     void HandleMouseLook()
     {
-        // Horizontal rotation (player body turns)
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         transform.Rotate(Vector3.up * mouseX);
-        
-        // Vertical rotation (camera looks up/down)
+
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-        verticalLookRotation -= mouseY; // Subtract because mouse Y is inverted
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f); // Limit look angle
-        
+        verticalLookRotation -= mouseY;
+        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
+
         if (cameraTransform != null)
         {
             cameraTransform.localEulerAngles = Vector3.right * verticalLookRotation;
         }
     }
-    
+
+    void HandleMovement()
+    {
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        float speed = isRunning ? runSpeed : walkSpeed;
+
+        Vector3 move = transform.right * moveX + transform.forward * moveZ;
+        move = move.normalized * speed;
+
+        // Jumping
+        if (controller.isGrounded && verticalVelocity < 0)
+        {
+            verticalVelocity = -2f; // stick to ground
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && controller.isGrounded)
+        {
+            verticalVelocity = jumpForce;
+        }
+
+        // Apply gravity
+        verticalVelocity += gravity * Time.deltaTime;
+        move.y = verticalVelocity;
+
+        controller.Move(move * Time.deltaTime);
+    }
+
     void ToggleCursorLock()
     {
-        Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.lockState = (Cursor.lockState == CursorLockMode.Locked)
+            ? CursorLockMode.None
+            : CursorLockMode.Locked;
         Cursor.visible = !Cursor.visible;
     }
-    
-    // Health related methods
+
+    void UpdateTetherUI()
+    {
+        if (abilities == null) return;
+
+        // Cooldown fill bar
+        if (tetherBar != null && abilities.currentTetherCharges < abilities.maxTetherCharges)
+        {
+            tetherBar.fillAmount = abilities.tetherRechargeTimer / abilities.tetherCooldown;
+        }
+        else if (tetherBar != null)
+        {
+            tetherBar.fillAmount = 1f;
+        }
+
+        // Charge icons
+        if (tetherChargeIcons != null && tetherChargeIcons.Length > 0)
+        {
+            for (int i = 0; i < tetherChargeIcons.Length; i++)
+            {
+                tetherChargeIcons[i].enabled = (i < abilities.currentTetherCharges);
+            }
+        }
+    }
+
+    // ===== HEALTH & KNOCKBACK =====
+
     public void TakeDamage(float damage)
     {
+        if (isDead) return;
+
         currentHealth -= damage;
-        
-        // Clamp health to valid range
-//        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
-        
-        // Update UI
         UpdateHealthBar();
-        
-        // Check for death
-        if (currentHealth <= 0 && !isDead)
+
+        if (currentHealth <= 0)
         {
             Die();
         }
     }
-    
+
     public void Heal(float amount)
     {
-        currentHealth += amount;
-        
-        // Clamp health to valid range
-        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
-        
-        // Update UI
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0f, maxHealth);
         UpdateHealthBar();
     }
-    
+
     void UpdateHealthBar()
     {
         if (healthBarFill != null)
         {
-            // Update fill amount
-            healthBarFill.fillAmount = currentHealth / maxHealth;
-            
-            // Update color based on health percentage
-            float healthPercentage = currentHealth / maxHealth;
-            healthBarFill.color = Color.Lerp(lowHealthColor, fullHealthColor, healthPercentage);
+            float pct = currentHealth / maxHealth;
+            healthBarFill.fillAmount = pct;
+            healthBarFill.color = Color.Lerp(lowHealthColor, fullHealthColor, pct);
         }
     }
-    
+
     void Die()
     {
         isDead = true;
-        Debug.Log("Player died!");
-        
-        // Disable movement
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        
-        // You can add more death effects here
-        // Example: Play death animation, show game over screen, etc.
+        verticalVelocity = 0f;
+        Debug.Log("Player died.");
+        // Optional: Play animation, game over screen, etc.
     }
-    
+
     public void ApplyKnockback(Vector3 direction, float force)
     {
-        // Start knockback
         isKnockedBack = true;
         knockbackTimer = knockbackDuration;
-        
-        // Apply force
-        rb.linearVelocity = Vector3.zero; // Clear current velocity
-        rb.AddForce(direction.normalized * force, ForceMode.Impulse);
+        knockbackVelocity = direction.normalized * force;
     }
-    
-    void OnCollisionEnter(Collision collision)
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Check if collision is with enemy
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (hit.gameObject.CompareTag("Enemy"))
         {
-            // Take damage
-            TakeDamage(10f); // Take 10 damage when hit by enemy
-            
-            // Calculate knockback direction (away from enemy)
-            Vector3 knockbackDir = transform.position - collision.transform.position;
-            knockbackDir.y = 0.3f; // Add slight upward force
-            
-            // Apply knockback
+            TakeDamage(10f);
+            Vector3 knockbackDir = transform.position - hit.transform.position;
+            knockbackDir.y = 0.3f;
             ApplyKnockback(knockbackDir, knockbackForce);
         }
     }
