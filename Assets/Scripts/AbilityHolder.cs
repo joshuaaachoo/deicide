@@ -8,43 +8,68 @@ public class AbilityHolder : MonoBehaviour
 
     enum AbilityState
     {
-        ready, // can be used
-        active, // is being used
-        cooldown // can't be used
+        ready,
+        active,
+        cooldown
     }
     AbilityState state = AbilityState.ready;
 
-    public KeyCode key; // even though there are only 3 possibilities for this, it's useful to have for when players want to change their keybinds
+    public KeyCode key;
 
-    // Update is called once per frame
-    void Update()
-    {
-        switch(state)
+    void Update() {
+        switch (state)
         {
             case AbilityState.ready:
                 if (Input.GetKeyDown(key))
                 {
-                    // use ability + make it active
-                    ability.Activate();
+                    Debug.Log("Ability used: " + ability.name);
+                    ability.Activate(gameObject);
                     state = AbilityState.active;
                     activeTime = ability.activeTime;
                 }
                 break;
+
             case AbilityState.active:
-                if (activeTime > 0) { activeTime -= Time.deltaTime; }
-                else
+                if (activeTime > 0)
                 {
-                    state = AbilityState.cooldown;
-                    cooldownTime = ability.cooldownTime;
+                    activeTime -= Time.deltaTime;
+                    if (activeTime <= 0f)
+                    {
+                        EndAbility();
+                    }
                 }
                 break;
-            case AbilityState.cooldown: // this could also be default
-                if (cooldownTime > 0) { cooldownTime -= Time.deltaTime; }
-                else
+
+            case AbilityState.cooldown:
+                cooldownTime -= Time.deltaTime;
+                if (cooldownTime <= 0f)
                 {
                     state = AbilityState.ready;
+                    Debug.Log("Cooldown finished, ready again.");
                 }
                 break;
         }
     }
+    public void EndAbility()
+    {
+        ability.Deactivate(gameObject);
+        state = AbilityState.cooldown;
+        cooldownTime = ability.cooldownTime;
+    }
+    public Ability GetAbility()
+    {
+        return ability;
+    }
+
+    public bool IsOnCooldown()
+    {
+        return state == AbilityState.cooldown;
+    }
+
+    public float GetCooldownPercent()
+    {
+        return Mathf.Clamp01(cooldownTime / ability.cooldownTime);
+    }
+
+
 }

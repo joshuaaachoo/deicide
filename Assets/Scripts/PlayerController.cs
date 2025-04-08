@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement Settings")]
     public float walkSpeed = 15f;
-    public float dashMultiplier;
+    public float dashMultiplier = 2f;
     public float dashTime;
     public float dashCoolDown;
     public float jumpForce = 13f;
@@ -115,6 +115,7 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
         float speed = walkSpeed;
+        Vector3 inputVector = new Vector3(moveX, 0, moveZ);
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         move = move.normalized * speed;
@@ -131,8 +132,11 @@ public class PlayerController : MonoBehaviour
         }
 
         // Apply gravity
-        verticalVelocity += gravity * Time.deltaTime;
-        move.y = verticalVelocity;
+        if (state != DashState.active)
+        {
+            verticalVelocity += gravity * Time.deltaTime;
+            move.y = verticalVelocity;
+        }
 
         controller.Move(move * Time.deltaTime);
 
@@ -140,21 +144,30 @@ public class PlayerController : MonoBehaviour
         switch(state)
         {
             case DashState.ready:
-                if (Input.GetKeyDown(KeyCode.LeftShift))
+                if (Input.GetKeyDown(KeyCode.LeftShift) && inputVector != Vector3.zero)
                 {
-                    // use dash + make it active
-                    Vector3 dashVector = new Vector3(moveX * dashMultiplier, 0, moveZ * dashMultiplier);
-                    controller.Move(dashVector * dashTime);
+                    // make it active
                     state = DashState.active;
-                    dashTime = 0.2f;
+
+                    // Debug.Log("Dash was pressed");
                 }
                 break;
             case DashState.active:
-                if (dashTime > 0) { dashTime -= Time.deltaTime; }
+                if (dashTime > 0) 
+                {
+                    // use dash
+                    Vector3 dashVector = transform.TransformDirection(inputVector.normalized); // local instead of global!!
+                    // Debug.Log("Dashing in direction: " + dashVector);
+                    controller.Move(dashVector.normalized * dashMultiplier * Time.deltaTime);
+                    // if you're dashing, subtract from dash timer
+                    dashTime -= Time.deltaTime;
+                }
                 else
                 {
+                    // done dashing
                     state = DashState.cooldown;
                     dashCoolDown = 0.3f;
+                    dashTime = 0.2f;
                 }
                 break;
             case DashState.cooldown: // this could also be default
