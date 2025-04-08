@@ -13,7 +13,6 @@ public struct CharacterInput
 
 public class PlayerCharacter : MonoBehaviour, ICharacterController
 {
-
     [SerializeField] private KinematicCharacterMotor motor;
     [SerializeField] private Transform cameraTarget;
     [Space]
@@ -37,7 +36,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     private bool _isDashing;
     private float _dashTimer;
     private Vector3 _dashDirection;
-    private float _dashSpeed = 5f;
+    private float _dashSpeed;
 
     public void Initialize()
     {
@@ -52,9 +51,12 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         _requestedMovement = Vector3.ClampMagnitude(_requestedMovement, 1f); // normalizes vector
         _requestedMovement = input.Rotation * _requestedMovement;
 
-        _dashDirection = new Vector3(input.Move.x, 0f, input.Move.y);
-        _dashDirection = Vector3.ClampMagnitude(_dashDirection, 1f);
-        _dashDirection = input.Rotation * _dashDirection;
+        if (!_isDashing)
+        {
+            _dashDirection = new Vector3(input.Move.x, 0f, input.Move.y);
+            _dashDirection = Vector3.ClampMagnitude(_dashDirection, 1f);
+            _dashDirection = input.Rotation * _dashDirection;
+        }
 
         var wasRequestingJump = _requestedJump;
         _requestedJump = _requestedJump || input.Jump;
@@ -72,11 +74,13 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
         // dashing
-        if(_requestedDash && _dashDirection != Vector3.zero && !_isDashing) // if you req dash + not standing still + not already dashing
+        if(_requestedDash && !_isDashing && _dashDirection != Vector3.zero) // if you req dash + not standing still + not already dashing
         {
             _requestedDash = false;
             _isDashing = true;
             _dashTimer = 0f;
+
+            _dashSpeed = 45f;
         }
 
         if (_isDashing)
@@ -86,7 +90,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             float dashDuration = 0.2f;
 
             float slowdown = Mathf.Exp(-10f * _dashTimer);
-            Vector3 dashVelocity = _dashDirection * _dashSpeed * slowdown; // THIS IS NOT THE PROBLEM
+            Vector3 dashVelocity = _dashDirection * _dashSpeed * Mathf.Max(slowdown, 1.1f); // THIS IS NOT THE PROBLEM
 
             // project on ground plane to avoid vertical movement
             dashVelocity = Vector3.ProjectOnPlane(dashVelocity, motor.CharacterUp);
