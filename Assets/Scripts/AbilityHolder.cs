@@ -1,10 +1,13 @@
+/* Handles Ability cooldown timers
+ * 
+ */
 using UnityEngine;
 
 public class AbilityHolder : MonoBehaviour
 {
     public Ability ability;
-    float cooldownTime;
-    float activeTime;
+    float cooldownTime; // actually being subtracted from
+    float activeTime; // same here
 
     enum AbilityState
     {
@@ -12,19 +15,20 @@ public class AbilityHolder : MonoBehaviour
         active,
         cooldown
     }
-    AbilityState state = AbilityState.ready;
+    AbilityState _state = AbilityState.ready;
 
     public KeyCode key;
 
     void Update() {
-        switch (state)
+        switch (_state)
         {
             case AbilityState.ready:
                 if (Input.GetKeyDown(key))
                 {
                     Debug.Log("Ability used: " + ability.name);
-                    ability.Activate(gameObject);
-                    state = AbilityState.active;
+                    ability.Activate();
+                    //ability.Activate(gameObject);
+                    _state = AbilityState.active;
                     activeTime = ability.activeTime;
                 }
                 break;
@@ -32,6 +36,7 @@ public class AbilityHolder : MonoBehaviour
             case AbilityState.active:
                 if (activeTime > 0)
                 {
+                    ability.Tick(Time.deltaTime);
                     activeTime -= Time.deltaTime;
                     if (activeTime <= 0f)
                     {
@@ -44,7 +49,7 @@ public class AbilityHolder : MonoBehaviour
                 cooldownTime -= Time.deltaTime;
                 if (cooldownTime <= 0f)
                 {
-                    state = AbilityState.ready;
+                    _state = AbilityState.ready;
                     Debug.Log("Cooldown finished, ready again.");
                 }
                 break;
@@ -52,8 +57,9 @@ public class AbilityHolder : MonoBehaviour
     }
     public void EndAbility()
     {
-        ability.Deactivate(gameObject);
-        state = AbilityState.cooldown;
+        ability.Deactivate();
+        //ability.Deactivate(gameObject);
+        _state = AbilityState.cooldown;
         cooldownTime = ability.cooldownTime;
     }
     public Ability GetAbility()
@@ -63,7 +69,7 @@ public class AbilityHolder : MonoBehaviour
 
     public bool IsOnCooldown()
     {
-        return state == AbilityState.cooldown;
+        return _state == AbilityState.cooldown;
     }
 
     public float GetCooldownPercent()

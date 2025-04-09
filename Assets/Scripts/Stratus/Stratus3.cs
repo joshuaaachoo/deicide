@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 [CreateAssetMenu(menuName = "Abilities/Tether")]
-public class Tether : Ability
+public class Stratus3 : Ability
 {
     public float range = 15f;
     public float pullSpeed = 20f;

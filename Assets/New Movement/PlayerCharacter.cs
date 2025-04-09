@@ -9,12 +9,17 @@ public struct CharacterInput
     public Vector2 Move;
     public bool Jump;
     public bool Dash;
+    public bool Abil2;
+    public bool Abil3;
+    public bool Abil4;
 }
 
 public class PlayerCharacter : MonoBehaviour, ICharacterController
 {
+    [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private KinematicCharacterMotor motor;
     [SerializeField] private Transform cameraTarget;
+    [SerializeField] private AbilitySet abilitySet;
     [Space]
     [SerializeField] private float walkSpeed = 20f;
     [SerializeField] private float walkResponse = 25f; // acceleration kind of?
@@ -29,6 +34,9 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     private Vector3 _requestedMovement;
     private bool _requestedJump;
     private bool _requestedDash;
+    private bool _requestedAbil2;
+    private bool _requestedAbil3;
+    private bool _requestedAbil4;
 
     private float _timeSinceUngrounded;
     private float _timeSinceJumpRequest;
@@ -37,16 +45,20 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     private float _dashTimer;
     private Vector3 _dashDirection;
     private float _dashSpeed;
+    private Vector3 _externalVelocity;
+    private float _externalVelocityTimer = 0f;
+    private bool _killMomentum = false;
 
-    public void Initialize()
+    public void Initialize(AbilitySet abilitySet)
     {
         motor.CharacterController = this;
+        this.abilitySet = abilitySet;
     }
 
     public void UpdateInput(CharacterInput input)
     {
         _requestedRotation = input.Rotation;
-        
+
         _requestedMovement = new Vector3(input.Move.x, 0f, input.Move.y); // turns 2d input vector into 3d movement vector on xz plane
         _requestedMovement = Vector3.ClampMagnitude(_requestedMovement, 1f); // normalizes vector
         _requestedMovement = input.Rotation * _requestedMovement;
@@ -64,6 +76,26 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             _timeSinceJumpRequest = 0f;
 
         _requestedDash = input.Dash;
+
+        _requestedAbil2 = input.Abil2;
+        _requestedAbil3 = input.Abil3;
+        _requestedAbil4 = input.Abil4; // these might be unnecessary?
+
+        if (_requestedAbil2)
+        {
+            abilitySet.TryActivateSecondary();
+            Debug.Log("Trying to activate secondary");
+        }
+        if (_requestedAbil3)
+        {
+            abilitySet.TryActivateMobility();
+            Debug.Log("Trying to activate mobility");
+        }
+        if (_requestedAbil4)
+        {
+            abilitySet.TryActivateMisc();
+            Debug.Log("Trying to activate misc");
+        }
     }
 
     public void UpdateBody(float deltaTime)
@@ -73,8 +105,23 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
+
+        if(_externalVelocityTimer > 0f)
+        {
+            _externalVelocityTimer -= deltaTime;
+            currentVelocity = _externalVelocity;
+
+            if(_externalVelocityTimer <= 0f)
+            {
+                _externalVelocity = Vector3.zero;
+                currentVelocity = _killMomentum ? Vector3.zero : currentVelocity;
+                _killMomentum = false;
+            }
+            return;
+        }
+
         // dashing
-        if(_requestedDash && !_isDashing && _dashDirection != Vector3.zero) // if you req dash + not standing still + not already dashing
+        if (_requestedDash && !_isDashing && _dashDirection != Vector3.zero) // if you req dash + not standing still + not already dashing
         {
             _requestedDash = false;
             _isDashing = true;
@@ -215,6 +262,14 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
                 _requestedJump = canJumpLater;
             }
         }
+
+        /*
+        float currentSpeed = currentVelocity.magnitude;
+        // float t = Mathf.Clamp01(currentSpeed / maxSpeedForFOV);
+
+        playerCamera.UpdateFOV(currentSpeed);
+        // playerCamera.UpdateFOV(t);
+        */
     }
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
@@ -231,7 +286,14 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
         currentRotation = Quaternion.LookRotation(forward, motor.CharacterUp);
     }
-
+    
+    public void InjectExternalVelocity(Vector3 velocity, float duration, bool killMomentum)
+    {
+        // Debug.Log($"Injected velocity: {velocity} for {duration} seconds");
+        _externalVelocity = velocity;
+        _externalVelocityTimer = duration;
+        _killMomentum = killMomentum;
+    }
 
     #region Probably don't touch any of this?
     public void BeforeCharacterUpdate(float deltaTime)
@@ -270,4 +332,5 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     #endregion
 
     public Transform GetCameraTarget() => cameraTarget;
+    public KinematicCharacterMotor GetMotor() => motor;
 }
