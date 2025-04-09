@@ -7,9 +7,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
     [SerializeField] private PlayerCharacter playerCharacter;
     [SerializeField] private PlayerCamera playerCamera;
+    [SerializeField] public AbilitySet abilitySet;
+    [SerializeField] public CharacterDefinition selectedCharacter;
     [Space]
     [SerializeField] private CameraSpring cameraSpring;
 
@@ -21,10 +22,12 @@ public class Player : MonoBehaviour
         _inputActions = new PlayerInputActions();
         _inputActions.Enable();
 
-        playerCharacter.Initialize();
+        playerCharacter.Initialize(abilitySet);
         playerCamera.Initialize(playerCharacter.GetCameraTarget());
 
         cameraSpring.Initialize();
+
+        abilitySet.Initialize(this, playerCharacter, selectedCharacter);
     }
 
     void OnDestroy()
@@ -52,12 +55,18 @@ public class Player : MonoBehaviour
             Rotation = playerCamera.transform.rotation,
             Move     = input.Move.ReadValue<Vector2>(),
             Jump     = input.Jump.WasPressedThisFrame(),
-            Dash     = input.Dash.WasPressedThisFrame()
+            Dash     = input.Dash.WasPressedThisFrame(),
+            Abil2    = input.SecondaryFire.WasPressedThisFrame(),
+            Abil3    = input.Mobility.WasPressedThisFrame(),
+            Abil4    = input.Miscellaneous.WasPressedThisFrame()
         };
+
         playerCharacter.UpdateInput(characterInput);
         playerCharacter.UpdateBody(deltaTime);
-    }
 
+        // update ability tick
+        abilitySet.UpdateAbilities(deltaTime);
+    }
     void LateUpdate()
     {
         // playerCamera.UpdatePosition(playerCharacter.GetCameraTarget());
@@ -66,4 +75,7 @@ public class Player : MonoBehaviour
 
         // cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
     }
+
+    public PlayerCharacter GetCharacter() => playerCharacter;
+    public PlayerCamera GetCamera() => playerCamera;
 }
