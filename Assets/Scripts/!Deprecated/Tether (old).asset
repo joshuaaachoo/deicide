@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cca4de1563fb73c4ba553752e4fc4b7e, type: 3}
-  m_Name: Tether
+  m_Script: {fileID: 11500000, guid: 627fe319a41c04aebb14a4f21727c66e, type: 3}
+  m_Name: Tether (old)
   m_EditorClassIdentifier: 
-  name: 
-  icon: {fileID: 0}
-  cooldownTime: 0
-  activeTime: 0
-  description: 
+  name: Tether
+  cooldownTime: 1
+  activeTime: 0.1
+  range: 1000
+  pullSpeed: 200
+  swingArcHeight: 2

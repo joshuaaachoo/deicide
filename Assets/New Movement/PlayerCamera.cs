@@ -11,9 +11,10 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Camera cam;
     [Space]
     [SerializeField] private float sensitivity = 0.1f;
-    //[SerializeField] private float baseFOV = 60f;
-    //[SerializeField] private float maxFOV = 80f;
-    //[SerializeField] private float fovSmoothSpeed = 10f;
+    [SerializeField] private float baseFOV = 80f;
+
+    private float _fovSmoothSpeed;
+    private float _targetFOV;
 
     float pitchMin = -80f; // look up limit (in degrees)
     float pitchMax = 80f; // look down limit (in degrees)
@@ -23,8 +24,12 @@ public class PlayerCamera : MonoBehaviour
     {
         transform.position = target.position;
         transform.eulerAngles = _eulerAngles = target.eulerAngles;
+        cam.fieldOfView = baseFOV;
+        _targetFOV = baseFOV;
+        _fovSmoothSpeed = 5f;
     }
     public Camera GetCam() => cam;
+
     public void UpdateRotation(CameraInput input)
     {
         _eulerAngles += new Vector3(-input.Look.y, input.Look.x) * sensitivity;
@@ -37,11 +42,19 @@ public class PlayerCamera : MonoBehaviour
         transform.position = target.position;
     }
 
-    /* 
-     * public void UpdateFOV(float t)
+    public void UpdateFOV(float t)
     {
-        float targetFOV = Mathf.Lerp(baseFOV, maxFOV, t);
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, fovSmoothSpeed * Time.deltaTime);
-    }*
-     */
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, _targetFOV, _fovSmoothSpeed * t);
+    }
+
+    public void RequestFOVChange(float requestedFOV, float requestedFOVSmoothSpeed)
+    {
+        _targetFOV = requestedFOV;
+        _fovSmoothSpeed = requestedFOVSmoothSpeed;
+    }
+    public void ResetFOV()
+    {
+        _targetFOV = baseFOV;
+        _fovSmoothSpeed = 5f;
+    }
 }

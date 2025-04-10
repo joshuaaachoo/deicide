@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class AbilitySet : MonoBehaviour
 {
-    public AbilityData secondaryData, mobilityData, miscData;
-    public AbilityBasic secondaryLogic, mobilityLogic, miscLogic;
+    private AbilityData secondaryData, mobilityData, miscData;
+    private AbilityBasic secondaryLogic, mobilityLogic, miscLogic;
 
     private ISecondaryAbility secondary;
     private IMobilityAbility mobility;
@@ -18,17 +18,21 @@ public class AbilitySet : MonoBehaviour
         player = p;
         character = c;
 
+        secondaryData = def.secondaryData;
+        mobilityData = def.mobilityData;
+        miscData = def.miscData;
+
         secondaryLogic = CreateAbilityLogic(def.secondaryLogicClassName);
-        // mobilityLogic
-        // miscLogic
+        mobilityLogic = CreateAbilityLogic(def.mobilityLogicClassName);
+        miscLogic = CreateAbilityLogic(def.miscLogicClassName);
 
         secondaryLogic.Initialize(player, character, secondaryData);
-        // init mobi logic
-        // init misc logic
+        mobilityLogic.Initialize(player, character, mobilityData);
+        miscLogic.Initialize(player, character, miscData);
 
         secondary = secondaryLogic as ISecondaryAbility;
-        // interface mobi
-        // interface misc
+        mobility = mobilityLogic as IMobilityAbility;
+        misc = miscLogic as IMiscAbility;
     }
 
     private AbilityBasic CreateAbilityLogic(string className)

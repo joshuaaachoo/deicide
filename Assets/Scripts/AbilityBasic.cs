@@ -10,6 +10,8 @@ public abstract class AbilityBasic
     protected float activeTimer;
     protected bool isActive;
 
+    protected bool successful = true;
+
     public void Initialize(Player player, PlayerCharacter character, AbilityData data)
     {
         this.player = player;
@@ -21,11 +23,14 @@ public abstract class AbilityBasic
     {
         if(IsReady())
         {
-            Debug.Log("Ability used successfully! Ability name: " + data.name);
-
-            activeTimer = data.activeTime;
-            isActive = true;
             OnActivate();
+            if (successful)
+            {
+                Debug.Log("Ability used successfully! Ability name: " + data.name);
+
+                activeTimer = data.activeTime;
+                isActive = true;
+            }
         }
         else
         {

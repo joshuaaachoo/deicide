@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
         _inputActions = new PlayerInputActions();
         _inputActions.Enable();
 
-        playerCharacter.Initialize(abilitySet);
+        playerCharacter.Initialize(abilitySet, selectedCharacter);
         playerCamera.Initialize(playerCharacter.GetCameraTarget());
 
         cameraSpring.Initialize();
@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
         var cameraInput = new CameraInput { Look = input.Look.ReadValue<Vector2>() };
         playerCamera.UpdateRotation(cameraInput);
         playerCamera.UpdatePosition(playerCharacter.GetCameraTarget());
+        playerCamera.UpdateFOV(deltaTime);
 
         cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
 

@@ -21,14 +21,24 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private AbilitySet abilitySet;
     [Space]
-    [SerializeField] private float walkSpeed = 20f;
-    [SerializeField] private float walkResponse = 25f; // acceleration kind of?
-    [SerializeField] private float airSpeed = 15f;
-    [SerializeField] private float airAcceleration = 70f; // airSpeed and airAcceleration will be different for certain characters (looking at nyx), we can feel free to experiment
+    /* DEFAULT VALUES
+     * walkSpeed = 20f
+     * airSpeed = 15f
+     * airAcceleration = 70f
+     * jumpSpeed = 27f
+     * airJumpCount = 1
+     */
+    [SerializeField] private float walkSpeed;
+    [SerializeField] private float walkResponse; // acceleration kind of?
+    [SerializeField] private float airSpeed;
+    [SerializeField] private float airAcceleration;
     [Space]
-    [SerializeField] private float jumpSpeed = 27f; // jump speed which is technically jump height but with more math
-    [SerializeField] private float coyoteTime = 0.2f;
+    [SerializeField] private float jumpSpeed; // jump speed which is technically jump height but with more math
+    [SerializeField] private int airJumpCount;
+    [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float gravity = -90f;
+    [Space]
+    [SerializeField] private float dashSpeed;
 
     private Quaternion _requestedRotation;
     private Vector3 _requestedMovement;
@@ -40,19 +50,29 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
     private float _timeSinceUngrounded;
     private float _timeSinceJumpRequest;
+    private int _remainingJumps;
     private bool _ungroundedDueToJump;
     private bool _isDashing;
     private float _dashTimer;
+    private float _dashCooldown;
     private Vector3 _dashDirection;
-    private float _dashSpeed;
+    
     private Vector3 _externalVelocity;
     private float _externalVelocityTimer = 0f;
     private bool _killMomentum = false;
 
-    public void Initialize(AbilitySet abilitySet)
+    public void Initialize(AbilitySet abilitySet, CharacterDefinition def)
     {
         motor.CharacterController = this;
         this.abilitySet = abilitySet;
+
+        walkSpeed = def.walkSpeed;
+        walkResponse = walkSpeed * 1.25f;
+        airSpeed = def.airSpeed;
+        airAcceleration = def.airAcceleration;
+        jumpSpeed = def.jumpSpeed;
+        airJumpCount = def.airJumpCount;
+        dashSpeed = def.dashSpeed;
     }
 
     public void UpdateInput(CharacterInput input)
@@ -84,17 +104,17 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         if (_requestedAbil2)
         {
             abilitySet.TryActivateSecondary();
-            Debug.Log("Trying to activate secondary");
+            //Debug.Log("Trying to activate secondary");
         }
         if (_requestedAbil3)
         {
             abilitySet.TryActivateMobility();
-            Debug.Log("Trying to activate mobility");
+            //Debug.Log("Trying to activate mobility");
         }
         if (_requestedAbil4)
         {
             abilitySet.TryActivateMisc();
-            Debug.Log("Trying to activate misc");
+            //Debug.Log("Trying to activate misc");
         }
     }
 
@@ -121,23 +141,23 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         }
 
         // dashing
-        if (_requestedDash && !_isDashing && _dashDirection != Vector3.zero) // if you req dash + not standing still + not already dashing
+        if (_requestedDash && !_isDashing && _dashDirection != Vector3.zero && _dashCooldown <= 0f) // if you req dash + not standing still + not already dashing
         {
             _requestedDash = false;
             _isDashing = true;
             _dashTimer = 0f;
 
-            _dashSpeed = 45f;
+            _dashCooldown = 0.3f;
         }
 
         if (_isDashing)
         {
-            // dash cooldown timer
+            // dash active timer
             _dashTimer += deltaTime;
             float dashDuration = 0.2f;
 
             float slowdown = Mathf.Exp(-10f * _dashTimer);
-            Vector3 dashVelocity = _dashDirection * _dashSpeed * Mathf.Max(slowdown, 1.1f); // THIS IS NOT THE PROBLEM
+            Vector3 dashVelocity = _dashDirection * dashSpeed * Mathf.Max(slowdown, 1.1f); // THIS IS NOT THE PROBLEM
 
             // project on ground plane to avoid vertical movement
             dashVelocity = Vector3.ProjectOnPlane(dashVelocity, motor.CharacterUp);
@@ -151,11 +171,16 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
                 _isDashing = false;
             return;
         }
+        else if(_dashCooldown > 0f)
+        {
+            _dashCooldown -= deltaTime;
+        }
 
         if (motor.GroundingStatus.IsStableOnGround) // if on ground
         {
             _timeSinceUngrounded = 0f;
             _ungroundedDueToJump = false;
+            _remainingJumps = airJumpCount;
 
             var groundedMovement = motor.GetDirectionTangentToSurface
             (
@@ -238,7 +263,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             var grounded = motor.GroundingStatus.IsStableOnGround;
             var canCoyoteJump = _timeSinceUngrounded < coyoteTime && !_ungroundedDueToJump;
 
-            if (grounded || canCoyoteJump) // CHANGE THIS LATER FOR DOUBLE-JUMPING
+            if (grounded || canCoyoteJump || _remainingJumps > 0)
             {
                 _requestedJump = false;
 
@@ -252,6 +277,9 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
                 // add difference btwn current and target vertical speed to character's vel
                 currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
+
+                // subtract one from remaining jumps
+                if (!(grounded || canCoyoteJump)) _remainingJumps--;
             }
             else
             {
