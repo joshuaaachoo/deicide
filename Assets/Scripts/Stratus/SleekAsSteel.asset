@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca4de1563fb73c4ba553752e4fc4b7e, type: 3}
   m_Name: SleekAsSteel
   m_EditorClassIdentifier: 
-  name: 
+  name: Sleek as Steel
   icon: {fileID: 0}
-  cooldownTime: 0
-  activeTime: 0
+  cooldownTime: 1
+  activeTime: 1
   description: 

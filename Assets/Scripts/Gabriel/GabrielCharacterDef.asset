@@ -12,9 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d04697a7a5d0b064d8b25019741a7c1a, type: 3}
   m_Name: GabrielCharacterDef
   m_EditorClassIdentifier: 
+  characterName: Gabriel
+  walkSpeed: 20
+  airSpeed: 15
+  airAcceleration: 70
+  jumpSpeed: 27
+  armor: 0
+  dashSpeed: 45
+  airJumpCount: 4
   secondaryData: {fileID: 11400000, guid: 097d68fe4a5428841a280499e1b16aeb, type: 2}
   secondaryLogicClassName: CorrectiveAction
-  mobilityData: {fileID: 0}
-  mobilityLogicClassName: 
-  miscData: {fileID: 0}
-  miscLogicClassName: 
+  mobilityData: {fileID: 11400000, guid: cec77a40766b30b4faf8e63990485cd8, type: 2}
+  mobilityLogicClassName: RaptureAndRevelation
+  miscData: {fileID: 11400000, guid: 091a4fc19ce50244eb89968c47b88c8a, type: 2}
+  miscLogicClassName: PartingGift

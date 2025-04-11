@@ -7,5 +7,6 @@ public class AbilityData : ScriptableObject
     public Sprite icon;
     public float cooldownTime;
     public float activeTime;
+    public int charges;
     public string description;
 }

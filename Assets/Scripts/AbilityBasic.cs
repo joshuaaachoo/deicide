@@ -9,6 +9,7 @@ public abstract class AbilityBasic
     protected float cooldownTimer;
     protected float activeTimer;
     protected bool isActive;
+    protected int charges;
 
     protected bool successful = true;
 
@@ -17,6 +18,7 @@ public abstract class AbilityBasic
         this.player = player;
         this.character = character;
         this.data = data;
+        charges = this.data.charges;
     }
 
     public virtual void Activate()
@@ -26,7 +28,9 @@ public abstract class AbilityBasic
             OnActivate();
             if (successful)
             {
-                Debug.Log("Ability used successfully! Ability name: " + data.name);
+                Debug.Log($"{data.name} used successfully!");
+                charges--; // consume a charge
+
 
                 activeTimer = data.activeTime;
                 isActive = true;
@@ -34,7 +38,7 @@ public abstract class AbilityBasic
         }
         else
         {
-            Debug.LogWarning($"{data.name} is not ready! Cooldown remaining: {cooldownTimer:F2}, isActive: {isActive}");
+            Debug.LogWarning($"{data.name} is not ready! Cooldown remaining: {cooldownTimer:F2}, isActive: {isActive}, charges left: {charges}");
         }
     }
 
@@ -50,16 +54,22 @@ public abstract class AbilityBasic
         }
         else if (cooldownTimer > 0f)
             cooldownTimer -= deltaTime;
+        else if (cooldownTimer <= 0f && charges < data.charges) 
+        {
+            charges++;
+            Debug.Log($"{data.name} regenerated a charge. Charges left: {charges}, max charges: {data.charges}");
+            if (charges < data.charges) cooldownTimer = data.cooldownTime;
+        }
     }
 
     public virtual void Deactivate()
     {
         isActive = false;
-        cooldownTimer = data.cooldownTime;
+        if(charges < data.charges && cooldownTimer <= 0f) cooldownTimer = data.cooldownTime;
         OnDeactivate();
     }
 
-    public bool IsReady() => cooldownTimer <= 0f && !isActive;
+    public bool IsReady() => charges >= 1f && !isActive; // ready if more than 1 charge and not active
     public float GetCooldownPercent() => Mathf.Clamp01(cooldownTimer / data.cooldownTime);
 
     protected abstract void OnActivate();

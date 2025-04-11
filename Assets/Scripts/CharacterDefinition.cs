@@ -5,7 +5,7 @@ public class CharacterDefinition : ScriptableObject
 {
     public string characterName;
 
-    [Header("Stats (hover for default values)")]
+    [Header("Physics Stats (hover for default values)")]
     [Tooltip("Default: 20")]
     public float walkSpeed;
     [Tooltip("Default: 15")]
@@ -14,12 +14,17 @@ public class CharacterDefinition : ScriptableObject
     public float airAcceleration;
     [Tooltip("Default: 27")]
     public float jumpSpeed;
-    [Tooltip("Default: 0")]
-    public float armor;
     [Tooltip("Default: 45")]
     public float dashSpeed;
     [Tooltip("Default: 1")]
     public int airJumpCount;
+    [Tooltip("Default: 100")]
+    public float mass;
+
+    [Header("Gameplay Stats")]
+    public float maxHealth;
+    public float baseHealthRegen;
+    public float armor;
 
     [Header("Abilities")]
     public AbilityData secondaryData;

@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d04697a7a5d0b064d8b25019741a7c1a, type: 3}
   m_Name: StratusCharacterDef
   m_EditorClassIdentifier: 
-  characterName: 
-  walkSpeed: 0
-  airSpeed: 0
-  airAcceleration: 0
-  jumpSpeed: 0
+  characterName: Stratus
+  walkSpeed: 20
+  airSpeed: 15
+  airAcceleration: 70
+  jumpSpeed: 27
   armor: 0
-  dashSpeed: 0
-  airJumpCount: 0
-  secondaryData: {fileID: 0}
-  secondaryLogicClassName: 
-  mobilityData: {fileID: 0}
-  mobilityLogicClassName: 
-  miscData: {fileID: 0}
-  miscLogicClassName: 
+  dashSpeed: 45
+  airJumpCount: 1
+  secondaryData: {fileID: 11400000, guid: 6bd3b1606f4ad8048a400a551809100d, type: 2}
+  secondaryLogicClassName: Fray
+  mobilityData: {fileID: 11400000, guid: 9170c25f9db1753418126d7ad596ee1c, type: 2}
+  mobilityLogicClassName: Tether
+  miscData: {fileID: 11400000, guid: 1e490b5f57398af49ad85c6cf0c54a2a, type: 2}
+  miscLogicClassName: SleekAsSteel

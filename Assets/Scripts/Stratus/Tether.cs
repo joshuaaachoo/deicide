@@ -4,13 +4,15 @@ using System.Collections;
 public class Tether : AbilityBasic, IMobilityAbility
 {
     private float range = 2000f;
-    private float pullSpeed = 40f;
+    private float pullSpeed = 20f;
+    private float pullAcceleration = 10f;
     private float swingArcHeight = 2f; // maybe if i wanna do arcs
     private Vector3 pullDirection;
     private Vector3 tetherPoint;
 
     private Transform lineOrigin;
     private LineRenderer lineRenderer;
+    private float pullSpeedDynamic;
     public void ActivateMobility() => Activate();
     public void TickMobility(float dt) => Tick(dt);
     public void DeactivateMobility() => Deactivate();
@@ -37,7 +39,7 @@ public class Tether : AbilityBasic, IMobilityAbility
         lineRenderer.material = tetherMat; // finds M_TetherLine material and uses it for line renderer
         lineRenderer.loop = false;
 
-        lineRenderer.positionCount = 2;
+        lineRenderer.positionCount = 3;
 
         lineRenderer.startWidth = 0.3f;
         lineRenderer.endWidth = 0.3f;
@@ -73,11 +75,25 @@ public class Tether : AbilityBasic, IMobilityAbility
             Debug.Log("tether hit: " + hit.collider.name);
             tetherPoint = hit.point;
             var distance = Vector3.Distance(origin, tetherPoint);
-            var duration = distance / pullSpeed;
+
+            // var duration = distance / pullSpeed;
+
+            float a = 0.5f * pullAcceleration;
+            float b = pullSpeed;
+            float c = -distance;
+            float sqrtDiscriminant = Mathf.Sqrt(b * b - 4 * a * c);
+
+            float t1 = (-b + sqrtDiscriminant) / (2 * a);
+            float t2 = (-b - sqrtDiscriminant) / (2 * a);
+
+            var duration = Mathf.Max(t1, t2);
+
             data.activeTime = duration;
 
             lineRenderer.enabled = true;
             player.GetCamera().RequestFOVChange(100f, 5f);
+
+            pullSpeedDynamic = pullSpeed;
 
             successful = true;
         }
@@ -90,10 +106,14 @@ public class Tether : AbilityBasic, IMobilityAbility
     protected override void OnTick(float deltaTime)
     {
         // updates every tick of active time
-        character.InjectExternalVelocity(pullSpeed * pullDirection, deltaTime, false);
+        pullSpeedDynamic += pullAcceleration * deltaTime;
+        character.InjectExternalVelocity(pullSpeedDynamic * pullDirection, deltaTime, false); // vf = vi + at
 
-        lineRenderer.SetPosition(0, (lineOrigin.position + new Vector3(0f, -1.869f, 0f)));
+        // Debug.Log($"Current pull speed: {pullSpeedDynamic}");
+
+        lineRenderer.SetPosition(0, (lineOrigin.position + new Vector3(-1f, -1.869f, 0f)));
         lineRenderer.SetPosition(1, tetherPoint);
+        lineRenderer.SetPosition(2, (lineOrigin.position + new Vector3(1f, -1.869f, 0f)));
 
         character.GetMotor().ForceUnground();
     }
@@ -101,6 +121,7 @@ public class Tether : AbilityBasic, IMobilityAbility
     {
         // on deactivate
         Debug.Log("Tether finished");
+        pullSpeedDynamic = pullSpeed;
         lineRenderer.enabled = false;
         player.GetCamera().ResetFOV();
     }
