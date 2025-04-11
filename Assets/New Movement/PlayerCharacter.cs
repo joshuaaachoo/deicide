@@ -18,10 +18,9 @@ public struct CharacterInput
 public class PlayerCharacter : MonoBehaviour, ICharacterController
 {
     [SerializeField] private PlayerCamera playerCamera;
-    [SerializeField] private KinematicCharacterMotor motor;
+    [SerializeField] private KinematicCharacterMotor motor; // prefab this later
     [SerializeField] private Transform cameraTarget;
-    [SerializeField] private AbilitySet abilitySet;
-    [Space]
+    private AbilitySet abilitySet;
     /* DEFAULT VALUES
      * walkSpeed = 20f
      * airSpeed = 15f
@@ -29,17 +28,17 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
      * jumpSpeed = 27f
      * airJumpCount = 1
      */
-    [SerializeField] private float walkSpeed;
-    [SerializeField] private float walkResponse; // acceleration kind of?
-    [SerializeField] private float airSpeed;
-    [SerializeField] private float airAcceleration;
-    [Space]
-    [SerializeField] private float jumpSpeed; // jump speed which is technically jump height but with more math
-    [SerializeField] private int airJumpCount;
-    [SerializeField] private float coyoteTime = 0.15f;
-    [SerializeField] private float gravity = -90f;
-    [Space]
-    [SerializeField] private float dashSpeed;
+    private float walkSpeed;
+    private float walkResponse; // acceleration kind of?
+    private float airSpeed;
+    private float airAcceleration;
+    
+    private float jumpSpeed; // jump speed which is technically jump height but with more math
+    private int airJumpCount;
+    private float coyoteTime = 0.15f;
+    private float gravity = -90f;
+    
+    private float dashSpeed;
 
     private Quaternion _requestedRotation;
     private Vector3 _requestedMovement;

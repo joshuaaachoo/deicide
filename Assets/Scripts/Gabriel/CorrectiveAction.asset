@@ -16,4 +16,5 @@ MonoBehaviour:
   icon: {fileID: 0}
   cooldownTime: 6
   activeTime: 0.2
+  charges: 1
   description: 

@@ -42,14 +42,14 @@ public abstract class PrimaryFireBasic
             attackTimer = data.attackDuration;
             isFiring = true;
         }
-        else if (!isFiring)
+        else if (!isFiring && !isReloading)
         {
             Debug.Log($"{data.name} reloading...");
             Reload();
         }
         else
         {
-            Debug.Log($"{data.name} cannot be fired! Reload timer: {reloadTimer}, isFiring: {isFiring}, ammo left: {ammo}");
+            // Debug.Log($"{data.name} cannot be fired! Reload timer: {reloadTimer}, isFiring: {isFiring}, ammo left: {ammo}");
         }
     }
 
@@ -80,7 +80,7 @@ public abstract class PrimaryFireBasic
         isReloading = true;
     }
 
-    public bool CanFire() => ammo > 0f && !isFiring;
+    public bool CanFire() => ammo > 0f && !isFiring && !isReloading;
 
     protected abstract void OnFire();
     protected virtual void OnTick(float deltaTime) { }

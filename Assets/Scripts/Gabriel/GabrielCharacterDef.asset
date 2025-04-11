@@ -18,7 +18,7 @@ MonoBehaviour:
   airAcceleration: 70
   jumpSpeed: 27
   dashSpeed: 45
-  airJumpCount: 4
+  airJumpCount: 1
   mass: 100
   maxHealth: 200
   baseHealthRegen: 1

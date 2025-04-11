@@ -9,14 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a548a84af1a793543b18c8bc67d989ba, type: 3}
-  m_Name: Exodus
+  m_Script: {fileID: 11500000, guid: d3a6df7942be32343945a67d792e6e2a, type: 3}
+  m_Name: Test Enemy Definition
   m_EditorClassIdentifier: 
-  name: Exodus
-  icon: {fileID: 0}
-  attackDuration: 0.6
-  reloadSpeed: 1
-  rangeType: 1
-  range: 400
-  ammo: 7
-  description: 
+  enemyName: Test Enemy
+  size: 0
+  movementType: 0
+  mass: 100
+  moveSpeed: 20
+  airSpeed: 15
+  airAcceleration: 70
+  jumpSpeed: 27
+  maxHealth: 100
+  baseHealthRegen: 1
+  armor: 0
