@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class AbilitySet : MonoBehaviour
 {
+    // private PassiveBasic passiveLogic;
+
     private PrimaryFireBasic primaryLogic;
     private PrimaryFireData primaryData;
     private AbilityData secondaryData, mobilityData, miscData;
@@ -63,11 +65,13 @@ public class AbilitySet : MonoBehaviour
 
     public void UpdateAbilities(float deltaTime)
     {
+        // passiveLogic.Tick(deltaTime);
         primaryLogic.Tick(deltaTime);
         secondary?.TickSecondary(deltaTime);
         mobility?.TickMobility(deltaTime);
         misc?.TickMisc(deltaTime);
     }
+    // public PassiveBasic GetPassive() => passiveLogic;
     public void TryFirePrimary()
     {
         primaryLogic.Fire();
