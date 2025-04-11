@@ -9,6 +9,7 @@ public struct CharacterInput
     public Vector2 Move;
     public bool Jump;
     public bool Dash;
+    public bool Fire;
     public bool Abil2;
     public bool Abil3;
     public bool Abil4;
@@ -42,6 +43,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
     private Quaternion _requestedRotation;
     private Vector3 _requestedMovement;
+    private bool _requestedFire;
     private bool _requestedJump;
     private bool _requestedDash;
     private bool _requestedAbil2;
@@ -97,10 +99,16 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
         _requestedDash = input.Dash;
 
+        _requestedFire = input.Fire;
+
         _requestedAbil2 = input.Abil2;
         _requestedAbil3 = input.Abil3;
         _requestedAbil4 = input.Abil4; // these might be unnecessary?
 
+        if (_requestedFire)
+        {
+            abilitySet.TryFirePrimary();
+        }
         if (_requestedAbil2)
         {
             abilitySet.TryActivateSecondary();

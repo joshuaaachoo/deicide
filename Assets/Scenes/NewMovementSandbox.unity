@@ -493,7 +493,7 @@ MonoBehaviour:
   playerCharacter: {fileID: 872171490}
   playerCamera: {fileID: 1688665002}
   abilitySet: {fileID: 302092383}
-  selectedCharacter: {fileID: 11400000, guid: 22d43c92fa9f1674b8c28d9b9483d01d, type: 2}
+  selectedCharacter: {fileID: 11400000, guid: 60ee969c129540b4b97b57835b24f4b7, type: 2}
   cameraSpring: {fileID: 1606011179}
 --- !u!114 &302092383
 MonoBehaviour:

@@ -17,9 +17,14 @@ MonoBehaviour:
   airSpeed: 15
   airAcceleration: 70
   jumpSpeed: 27
-  armor: 0
   dashSpeed: 45
   airJumpCount: 1
+  mass: 0
+  maxHealth: 100
+  baseHealthRegen: 1
+  armor: 0
+  primaryData: {fileID: 11400000, guid: 6b2888ccb1c35474cabab04dddd81680, type: 2}
+  primaryLogicClassName: Shatterstrike
   secondaryData: {fileID: 11400000, guid: 6bd3b1606f4ad8048a400a551809100d, type: 2}
   secondaryLogicClassName: Fray
   mobilityData: {fileID: 11400000, guid: 9170c25f9db1753418126d7ad596ee1c, type: 2}

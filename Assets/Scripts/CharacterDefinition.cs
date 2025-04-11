@@ -26,6 +26,10 @@ public class CharacterDefinition : ScriptableObject
     public float baseHealthRegen;
     public float armor;
 
+    [Header("Primary Fire")]
+    public PrimaryFireData primaryData;
+    public string primaryLogicClassName;
+
     [Header("Abilities")]
     public AbilityData secondaryData;
     public string secondaryLogicClassName;

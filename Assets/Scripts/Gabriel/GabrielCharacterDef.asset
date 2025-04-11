@@ -17,9 +17,14 @@ MonoBehaviour:
   airSpeed: 15
   airAcceleration: 70
   jumpSpeed: 27
-  armor: 0
   dashSpeed: 45
   airJumpCount: 4
+  mass: 100
+  maxHealth: 200
+  baseHealthRegen: 1
+  armor: 0
+  primaryData: {fileID: 11400000, guid: 08041ad91f0f944439673543c93458a0, type: 2}
+  primaryLogicClassName: Exodus
   secondaryData: {fileID: 11400000, guid: 097d68fe4a5428841a280499e1b16aeb, type: 2}
   secondaryLogicClassName: CorrectiveAction
   mobilityData: {fileID: 11400000, guid: cec77a40766b30b4faf8e63990485cd8, type: 2}

@@ -11,7 +11,7 @@ public abstract class AbilityBasic
     protected bool isActive;
     protected int charges;
 
-    protected bool successful = true;
+    protected bool successful;
 
     public void Initialize(Player player, PlayerCharacter character, AbilityData data)
     {
@@ -19,8 +19,10 @@ public abstract class AbilityBasic
         this.character = character;
         this.data = data;
         charges = this.data.charges;
+        successful = true;
     }
 
+    // active and cooldown timer handlers
     public virtual void Activate()
     {
         if(IsReady())
@@ -72,6 +74,7 @@ public abstract class AbilityBasic
     public bool IsReady() => charges >= 1f && !isActive; // ready if more than 1 charge and not active
     public float GetCooldownPercent() => Mathf.Clamp01(cooldownTimer / data.cooldownTime);
 
+    // logic to be overridden
     protected abstract void OnActivate();
     protected virtual void OnTick(float deltaTime) { }
     protected virtual void OnDeactivate() { }

@@ -57,6 +57,7 @@ public class Player : MonoBehaviour
             Move     = input.Move.ReadValue<Vector2>(),
             Jump     = input.Jump.WasPressedThisFrame(),
             Dash     = input.Dash.WasPressedThisFrame(),
+            Fire     = input.PrimaryFire.IsPressed(),
             Abil2    = input.SecondaryFire.WasPressedThisFrame(),
             Abil3    = input.Mobility.WasPressedThisFrame(),
             Abil4    = input.Miscellaneous.WasPressedThisFrame()
