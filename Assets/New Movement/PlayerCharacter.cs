@@ -98,6 +98,15 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
         _requestedDash = input.Dash;
 
+        if (_requestedDash && !_isDashing && _dashDirection != Vector3.zero && _dashCooldown <= 0f) // if you req dash + not standing still + not already dashing
+        {
+            _requestedDash = false;
+            _isDashing = true;
+            _dashTimer = 0f;
+
+            _dashCooldown = 0.3f;
+        }
+
         _requestedFire = input.Fire;
 
         _requestedAbil2 = input.Abil2;
@@ -132,7 +141,6 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
-
         if(_externalVelocityTimer > 0f)
         {
             _externalVelocityTimer -= deltaTime;
@@ -148,15 +156,6 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         }
 
         // dashing
-        if (_requestedDash && !_isDashing && _dashDirection != Vector3.zero && _dashCooldown <= 0f) // if you req dash + not standing still + not already dashing
-        {
-            _requestedDash = false;
-            _isDashing = true;
-            _dashTimer = 0f;
-
-            _dashCooldown = 0.3f;
-        }
-
         if (_isDashing)
         {
             // dash active timer
@@ -183,7 +182,8 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             _dashCooldown -= deltaTime;
         }
 
-        if (motor.GroundingStatus.IsStableOnGround) // if on ground
+        // if on ground
+        if (motor.GroundingStatus.IsStableOnGround) 
         {
             _timeSinceUngrounded = 0f;
             _ungroundedDueToJump = false;

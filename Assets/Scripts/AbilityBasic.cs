@@ -13,6 +13,12 @@ public abstract class AbilityBasic
 
     protected bool successful;
 
+    // debug and gizmos
+    protected bool _showDebug; // change this within unique abilities' OnTick()
+    protected Vector3 _debugOrigin;
+    protected Vector3 _debugDirection;
+    protected float _debugDistance;
+    protected float _debugRadius;
     public void Initialize(Player player, PlayerCharacter character, AbilityData data)
     {
         this.player = player;
@@ -20,6 +26,9 @@ public abstract class AbilityBasic
         this.data = data;
         charges = this.data.charges;
         successful = true;
+        _showDebug = false;
+
+        AbilityDebugDrawer drawer = character.gameObject.AddComponent<AbilityDebugDrawer>();
     }
 
     // active and cooldown timer handlers
@@ -73,6 +82,11 @@ public abstract class AbilityBasic
 
     public bool IsReady() => charges >= 1f && !isActive; // ready if more than 1 charge and not active
     public float GetCooldownPercent() => Mathf.Clamp01(cooldownTimer / data.cooldownTime);
+    public bool ShouldShowDebug() => _showDebug;
+    public Vector3 GetDebugDirection() => _debugDirection;
+    public Vector3 GetDebugOrigin() => _debugOrigin;
+    public float GetDebugDistance() => _debugDistance;
+    public float GetDebugRadius() => _debugRadius;
 
     // logic to be overridden
     protected abstract void OnActivate();

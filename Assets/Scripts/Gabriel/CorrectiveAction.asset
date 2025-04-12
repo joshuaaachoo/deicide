@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Corrective Action
   icon: {fileID: 0}
-  cooldownTime: 6
+  cooldownTime: 0.1
   activeTime: 0.2
   charges: 1
   description: 

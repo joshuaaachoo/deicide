@@ -237,7 +237,7 @@ GameObject:
   m_Component:
   - component: {fileID: 215833254}
   - component: {fileID: 215833255}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ Transform:
   m_GameObject: {fileID: 215833253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 32.92, y: 4.12, z: 7}
+  m_LocalPosition: {x: 41.7, y: 31.39, z: 27.63}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -641,7 +641,7 @@ GameObject:
   - component: {fileID: 312652085}
   - component: {fileID: 312652084}
   - component: {fileID: 312652086}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnemyCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1092,7 +1092,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 100}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &442797214
 MonoBehaviour:
@@ -1674,7 +1674,7 @@ GameObject:
   - component: {fileID: 1240936525}
   - component: {fileID: 1240936527}
   - component: {fileID: 1240936526}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2177,7 +2177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1632137746}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
