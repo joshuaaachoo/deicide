@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d04697a7a5d0b064d8b25019741a7c1a, type: 3}
+  m_Name: StratusCharacterDef
+  m_EditorClassIdentifier: 
+  characterName: Stratus
+  walkSpeed: 20
+  airSpeed: 15
+  airAcceleration: 70
+  jumpSpeed: 27
+  dashSpeed: 45
+  airJumpCount: 1
+  mass: 0
+  maxHealth: 100
+  baseHealthRegen: 1
+  armor: 0
+  primaryData: {fileID: 11400000, guid: 6b2888ccb1c35474cabab04dddd81680, type: 2}
+  primaryLogicClassName: Shatterstrike
+  secondaryData: {fileID: 11400000, guid: 6bd3b1606f4ad8048a400a551809100d, type: 2}
+  secondaryLogicClassName: Fray
+  mobilityData: {fileID: 11400000, guid: 9170c25f9db1753418126d7ad596ee1c, type: 2}
+  mobilityLogicClassName: Tether
+  miscData: {fileID: 11400000, guid: 1e490b5f57398af49ad85c6cf0c54a2a, type: 2}
+  miscLogicClassName: SleekAsSteel

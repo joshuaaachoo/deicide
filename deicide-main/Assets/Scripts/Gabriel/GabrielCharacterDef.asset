@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d04697a7a5d0b064d8b25019741a7c1a, type: 3}
+  m_Name: GabrielCharacterDef
+  m_EditorClassIdentifier: 
+  characterName: Gabriel
+  walkSpeed: 20
+  airSpeed: 15
+  airAcceleration: 70
+  jumpSpeed: 27
+  dashSpeed: 45
+  airJumpCount: 1
+  mass: 100
+  maxHealth: 200
+  baseHealthRegen: 1
+  armor: 0
+  primaryData: {fileID: 11400000, guid: 08041ad91f0f944439673543c93458a0, type: 2}
+  primaryLogicClassName: Exodus
+  secondaryData: {fileID: 11400000, guid: 097d68fe4a5428841a280499e1b16aeb, type: 2}
+  secondaryLogicClassName: CorrectiveAction
+  mobilityData: {fileID: 11400000, guid: cec77a40766b30b4faf8e63990485cd8, type: 2}
+  mobilityLogicClassName: RaptureAndRevelation
+  miscData: {fileID: 11400000, guid: 091a4fc19ce50244eb89968c47b88c8a, type: 2}
+  miscLogicClassName: PartingGift

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d04697a7a5d0b064d8b25019741a7c1a, type: 3}
+  m_Name: Lady Tori
+  m_EditorClassIdentifier: 
+  characterName: Lady Tori
+  walkSpeed: 20
+  airSpeed: 15
+  airAcceleration: 70
+  jumpSpeed: 27
+  dashSpeed: 45
+  airJumpCount: 1
+  mass: 100
+  maxHealth: 100
+  baseHealthRegen: 1
+  armor: 0
+  primaryData: {fileID: 11400000, guid: a76045111796548678f4b6683d87089e, type: 2}
+  primaryLogicClassName: GodstainedTripleBarrel
+  secondaryData: {fileID: 11400000, guid: 6bd3b1606f4ad8048a400a551809100d, type: 2}
+  secondaryLogicClassName: 
+  mobilityData: {fileID: 11400000, guid: 091a4fc19ce50244eb89968c47b88c8a, type: 2}
+  mobilityLogicClassName: 
+  miscData: {fileID: 11400000, guid: 1e490b5f57398af49ad85c6cf0c54a2a, type: 2}
+  miscLogicClassName: 
