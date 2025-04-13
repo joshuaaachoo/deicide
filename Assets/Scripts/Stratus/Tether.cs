@@ -70,7 +70,7 @@ public class Tether : AbilityBasic, IMobilityAbility
         Vector3 origin = lineOrigin.position;
         pullDirection = lineOrigin.forward;
 
-        if (Physics.Raycast(origin, pullDirection, out RaycastHit hit, range, LayerMask.GetMask("Tetherable")))
+        if (Physics.Raycast(origin, pullDirection, out RaycastHit hit, range, LayerMask.GetMask("Terrain", "Wall", "Platform")))
         {
             Debug.Log("tether hit: " + hit.collider.name);
             tetherPoint = hit.point;

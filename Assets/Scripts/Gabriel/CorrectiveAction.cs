@@ -10,7 +10,7 @@ public class CorrectiveAction : AbilityBasic, ISecondaryAbility
     private Vector3 origin;
     private float detectionRadius = 1f;
     private float detectionRange = 1f;
-    private float punchForce = 200f;
+    private float punchForce = 75f;
 
     public void ActivateSecondary() => Activate();
     public void TickSecondary(float dt) => Tick(dt);
@@ -65,7 +65,7 @@ public class CorrectiveAction : AbilityBasic, ISecondaryAbility
                     default:
                         Vector3 knockDirection = _lungeDirection.normalized;
                         character.InjectExternalVelocity(_lungeDirection * _lungeSpeed / (data.activeTime / 0.05f), 0.05f, false); // this equation stinks
-                        enemy.GetEnemyCharacter().ApplyKnockback(knockDirection, punchForce, 1f);
+                        enemy.GetCharacterMotor().ApplyKnockback(knockDirection, punchForce, 1f);
                         break;
                 }
             }

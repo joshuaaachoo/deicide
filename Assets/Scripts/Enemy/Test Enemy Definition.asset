@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Test Enemy
   size: 0
   movementType: 0
-  mass: 10
+  mass: 15
   moveSpeed: 20
   airSpeed: 15
   airAcceleration: 70

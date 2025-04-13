@@ -37,7 +37,7 @@ public abstract class PrimaryFireBasic
         {
             Debug.Log($"{data.name} fired!");
             OnFire();
-            ammo--;
+            if(rangeType == PrimaryRange.Ranged) ammo--;
 
             attackTimer = data.attackDuration;
             isFiring = true;
@@ -63,7 +63,6 @@ public abstract class PrimaryFireBasic
             if (attackTimer <= 0f)
             {
                 isFiring = false;
-                if (rangeType == PrimaryRange.Melee) Reload();
             }
         }
         else if (reloadTimer > 0f) // not attacking but reloading

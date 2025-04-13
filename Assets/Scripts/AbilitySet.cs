@@ -88,4 +88,12 @@ public class AbilitySet : MonoBehaviour
     {
         misc?.ActivateMisc();
     }
+    public PrimaryFireData GetPrimaryData() => primaryData;
+    public AbilityData GetSecondaryData() => secondaryData;
+    public AbilityData GetMobilityData() => mobilityData;
+    public AbilityData GetMiscData() => miscData;
+    public PrimaryFireBasic GetPrimaryLogic() => primaryLogic;
+    public AbilityBasic GetSecondaryLogic() => secondaryLogic;
+    public AbilityBasic GetMobilityLogic() => mobilityLogic;
+    public AbilityBasic GetMiscLogic() => miscLogic;
 }

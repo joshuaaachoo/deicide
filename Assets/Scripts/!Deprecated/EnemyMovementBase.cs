@@ -55,23 +55,6 @@ public abstract class EnemyMovementBase : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
-        if(_externalVelocityTimer > 0f)
-        {
-            if(!motor.GroundingStatus.IsStableOnGround) _externalVelocity += Vector3.up * gravity * deltaTime;
-            else
-            {
-                _externalVelocity = Vector3.ProjectOnPlane(_externalVelocity, motor.GroundingStatus.GroundNormal).normalized * _externalVelocity.magnitude;
-            }
-            _externalVelocityTimer -= Time.deltaTime;
-            currentVelocity = _externalVelocity;
-
-            if (_externalVelocityTimer <= 0f)
-            {
-                _externalVelocity = Vector3.zero;
-            }
-            return;
-        }
-
         if(movementType == EnemyDefinition.MovementType.Grounded)
         {
             if(motor.GroundingStatus.IsStableOnGround)
@@ -123,6 +106,8 @@ public abstract class EnemyMovementBase : MonoBehaviour, ICharacterController
                     currentVelocity += targetPlanarVelocity - currentPlanarVelocity;
 
                     // prevent air-climbing steep slopes (unintentional wall-riding)
+
+                    /*
                     if (motor.GroundingStatus.FoundAnyGround)
                     {
                         if (Vector3.Dot(movementForce, currentVelocity + movementForce) > 0f) // if moving in the same direction as resultant vel
@@ -142,6 +127,7 @@ public abstract class EnemyMovementBase : MonoBehaviour, ICharacterController
                             movementForce = Vector3.ProjectOnPlane(movementForce, obstructionNormal);
                         }
                     }
+                    */
                 }
                 else
                 {
@@ -162,6 +148,10 @@ public abstract class EnemyMovementBase : MonoBehaviour, ICharacterController
         {
             // im cooked
         }
+
+        currentVelocity += _externalVelocity;
+        _externalVelocity = _externalVelocity.magnitude >= 1f ? Vector3.Lerp(_externalVelocity, Vector3.zero, deltaTime * Mathf.Sqrt(mass)) : Vector3.zero;
+        if (_externalVelocity.magnitude >= 1f) motor.ForceUnground();
     }
 
     #region Probably don't touch this
@@ -206,10 +196,13 @@ public abstract class EnemyMovementBase : MonoBehaviour, ICharacterController
     }
     #endregion
 
-    public void ApplyKnockback(Vector3 direction, float force, float duration)
+    public void ApplyKnockback(Vector3 direction, float force)
     {
         Vector3 flatDirection = Vector3.ProjectOnPlane(direction, Vector3.up).normalized;
-        _externalVelocity = motor.GroundingStatus.IsStableOnGround ? flatDirection * force / mass : direction * force / mass;
-        _externalVelocityTimer = duration;
+        float kbMagnitude = force / mass;
+        _externalVelocity = motor.GroundingStatus.IsStableOnGround ? flatDirection * kbMagnitude : direction * kbMagnitude;
+
+        // _externalVelocity = motor.GroundingStatus.IsStableOnGround ? flatDirection * force / mass : direction * force / mass;
+        // _externalVelocityTimer = duration;
     }
 }
