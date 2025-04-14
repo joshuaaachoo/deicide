@@ -3,11 +3,11 @@ using UnityEngine;
 public class CameraSpring : MonoBehaviour
 {
     [Min(0.01f)]
-    [SerializeField] private float halfLife = 0.075f;
+    [SerializeField] private float halfLife = 0.075f; // default 0.075f
     [Space]
-    [SerializeField] private float frequency = 18f;
+    [SerializeField] private float frequency = 18f; // default 18f
     [Space]
-    [SerializeField] private float angularDisplacement = 2f;
+    [SerializeField] private float angularDisplacement = 2f; // default 2f
     // [SerializeField] private float linearDisplacement = 0.05f;
 
     private Vector3 _springPosition;

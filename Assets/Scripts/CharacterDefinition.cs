@@ -8,9 +8,9 @@ public class CharacterDefinition : ScriptableObject
     [Header("Physics Stats (hover for default values)")]
     [Tooltip("Default: 20")]
     public float walkSpeed;
-    [Tooltip("Default: 15")]
+    [Tooltip("Default: 20")]
     public float airSpeed;
-    [Tooltip("Default: 70")]
+    [Tooltip("Default: 200")]
     public float airAcceleration;
     [Tooltip("Default: 27")]
     public float jumpSpeed;

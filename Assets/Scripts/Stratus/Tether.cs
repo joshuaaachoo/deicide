@@ -4,7 +4,7 @@ using System.Collections;
 public class Tether : AbilityBasic, IMobilityAbility
 {
     private float range = 2000f;
-    private float pullSpeed = 20f;
+    private float pullSpeed;
     private float pullAcceleration = 10f;
     private float swingArcHeight = 2f; // maybe if i wanna do arcs
     private Vector3 pullDirection;
@@ -20,6 +20,7 @@ public class Tether : AbilityBasic, IMobilityAbility
     protected override void OnActivate()
     {
         // on activate
+        pullSpeed = player.selectedCharacter.walkSpeed * 2;
 
         // gets cam
         Camera cam = player.GetCamera().GetCam();
@@ -107,7 +108,7 @@ public class Tether : AbilityBasic, IMobilityAbility
     {
         // updates every tick of active time
         pullSpeedDynamic += pullAcceleration * deltaTime;
-        character.InjectExternalVelocity(pullSpeedDynamic * pullDirection, deltaTime, false); // vf = vi + at
+        character.InjectExternalVelocity(pullSpeedDynamic * pullDirection, deltaTime); // vf = vi + at
 
         // Debug.Log($"Current pull speed: {pullSpeedDynamic}");
 

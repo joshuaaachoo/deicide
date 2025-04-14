@@ -188,6 +188,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             _timeSinceUngrounded = 0f;
             _ungroundedDueToJump = false;
             _remainingJumps = airJumpCount;
+            _killMomentum = _externalVelocityTimer <= 0f;
 
             var groundedMovement = motor.GetDirectionTangentToSurface
             (
@@ -209,21 +210,22 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             // air movement
             if(_requestedMovement.sqrMagnitude > 0f)
             {
-                var planarMovement = Vector3.ProjectOnPlane // req movement projected onto movement plane
+                var requestedPlanarMovement = Vector3.ProjectOnPlane // req movement projected onto movement plane
                 (
                     vector: _requestedMovement,
                     planeNormal: motor.CharacterUp
                 ) * _requestedMovement.magnitude;
 
                 // current vel on movement plane
-                var currentPlanarVelocity = Vector3.ProjectOnPlane
+                Vector3 currentPlanarVelocity;
+                currentPlanarVelocity = Vector3.ProjectOnPlane
                 (
                     vector: currentVelocity,
                     planeNormal: motor.CharacterUp
                 );
 
                 // calculate movement force
-                var movementForce = planarMovement * airAcceleration * deltaTime;
+                var movementForce = requestedPlanarMovement * airAcceleration * deltaTime;
 
                 // add it to current planar vel for a target vel
                 var targetPlanarVelocity = currentPlanarVelocity + movementForce;
@@ -255,14 +257,15 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
                     }
                 }
             }
-            else // stop movement if you're not inputting anything
+            else if(_externalVelocityTimer <= 0f) // stop movement if you're not inputting anything
             {
                 Vector3 verticalVelocity = Vector3.Project(currentVelocity, motor.CharacterUp);
                 float haltLerpSpeed = 5f; // higher number = faster halt in air
                 currentVelocity = Vector3.Lerp(currentVelocity, verticalVelocity, haltLerpSpeed * deltaTime);
             }
             // gravity
-            currentVelocity += motor.CharacterUp * gravity * deltaTime;
+            var terminalVel = 60f;
+            if (_externalVelocityTimer <= 0f) currentVelocity += currentVelocity.y > -terminalVel ? motor.CharacterUp * gravity * deltaTime : Vector3.zero;
         }
 
         if(_requestedJump)
@@ -322,12 +325,12 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         currentRotation = Quaternion.LookRotation(forward, motor.CharacterUp);
     }
     
-    public void InjectExternalVelocity(Vector3 velocity, float duration, bool killMomentum)
+    public void InjectExternalVelocity(Vector3 velocity, float duration)
     {
         // Debug.Log($"Injected velocity: {velocity} for {duration} seconds");
         _externalVelocity = velocity;
         _externalVelocityTimer = duration;
-        _killMomentum = killMomentum;
+        _killMomentum = false;
     }
 
     #region Probably don't touch any of this?

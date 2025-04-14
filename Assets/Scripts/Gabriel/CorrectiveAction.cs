@@ -23,8 +23,8 @@ public class CorrectiveAction : AbilityBasic, ISecondaryAbility
         // lunge in direction of camera
         _lungeDirection = player.GetCamera().transform.forward.normalized;
 
-        // inject dash vel
-        character.InjectExternalVelocity(_lungeDirection * _lungeSpeed, _lungeDuration, false);
+        // inject dash vel. you will not go as far if you're on the ground and you look down. that's a skill issue
+        character.InjectExternalVelocity(_lungeDirection * _lungeSpeed, _lungeDuration);
         character.GetMotor().ForceUnground(data.activeTime); // ensures you unstick from ground on use
 
         // debug gizmo drawing
@@ -46,7 +46,7 @@ public class CorrectiveAction : AbilityBasic, ISecondaryAbility
             Enemy enemy = hit.collider.GetComponentInParent<Enemy>();
             if(enemy != null)
             {
-                Debug.Log($"Corrective Action hit: {enemy.name}");
+                Debug.Log($"Corrective Action hit: {enemy.name}, size: {enemy.enemyDefinition.size}");
 
                 _hasHit = true;
                 activeTimer = 0.05f;
@@ -64,8 +64,8 @@ public class CorrectiveAction : AbilityBasic, ISecondaryAbility
                         break;
                     default:
                         Vector3 knockDirection = _lungeDirection.normalized;
-                        character.InjectExternalVelocity(_lungeDirection * _lungeSpeed / (data.activeTime / 0.05f), 0.05f, false); // this equation stinks
-                        enemy.GetCharacterMotor().ApplyKnockback(knockDirection, punchForce, 1f);
+                        character.InjectExternalVelocity(_lungeDirection * _lungeSpeed / (data.activeTime / 0.05f), 0.05f); // this equation stinks
+                        enemy.ApplyKnockback(knockDirection, punchForce);
                         break;
                 }
             }

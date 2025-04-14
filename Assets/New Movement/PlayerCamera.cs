@@ -16,8 +16,8 @@ public class PlayerCamera : MonoBehaviour
     private float _fovSmoothSpeed;
     private float _targetFOV;
 
-    float pitchMin = -80f; // look up limit (in degrees)
-    float pitchMax = 80f; // look down limit (in degrees)
+    float pitchMin = -85f; // look up limit (in degrees)
+    float pitchMax = 85f; // look down limit (in degrees)
 
     private Vector3 _eulerAngles;
     public void Initialize(Transform target)
