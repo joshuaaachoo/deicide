@@ -13,6 +13,7 @@ public struct CharacterInput
     public bool Abil2;
     public bool Abil3;
     public bool Abil4;
+    public bool Reload;
 }
 
 public class PlayerCharacter : MonoBehaviour, ICharacterController
@@ -48,6 +49,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     private bool _requestedAbil2;
     private bool _requestedAbil3;
     private bool _requestedAbil4;
+    private bool _requestedReload;
 
     private float _timeSinceUngrounded;
     private float _timeSinceJumpRequest;
@@ -84,6 +86,16 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         _requestedMovement = Vector3.ClampMagnitude(_requestedMovement, 1f); // normalizes vector
         _requestedMovement = input.Rotation * _requestedMovement;
 
+        _requestedDash = input.Dash;
+
+        _requestedReload = input.Reload;
+
+        _requestedFire = input.Fire;
+
+        _requestedAbil2 = input.Abil2;
+        _requestedAbil3 = input.Abil3;
+        _requestedAbil4 = input.Abil4; // these might be unnecessary?
+
         if (!_isDashing)
         {
             _dashDirection = new Vector3(input.Move.x, 0f, input.Move.y);
@@ -96,8 +108,6 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         if (_requestedJump && !wasRequestingJump)
             _timeSinceJumpRequest = 0f;
 
-        _requestedDash = input.Dash;
-
         if (_requestedDash && !_isDashing && _dashDirection != Vector3.zero && _dashCooldown <= 0f) // if you req dash + not standing still + not already dashing
         {
             _requestedDash = false;
@@ -106,12 +116,6 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
 
             _dashCooldown = 0.3f;
         }
-
-        _requestedFire = input.Fire;
-
-        _requestedAbil2 = input.Abil2;
-        _requestedAbil3 = input.Abil3;
-        _requestedAbil4 = input.Abil4; // these might be unnecessary?
 
         if (_requestedFire)
         {
@@ -131,6 +135,11 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
         {
             abilitySet.TryActivateMisc();
             //Debug.Log("Trying to activate misc");
+        }
+
+        if (_requestedReload)
+        {
+            abilitySet.GetPrimaryLogic().Reload();
         }
     }
 
@@ -210,10 +219,11 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             // air movement
             if(_requestedMovement.sqrMagnitude > 0f)
             {
-                var requestedPlanarMovement = Vector3.ProjectOnPlane // req movement projected onto movement plane
+                // Debug.Log("Moving in air");
+                var requestedPlanarMovement = motor.GetDirectionTangentToSurface // req movement projected onto movement plane
                 (
-                    vector: _requestedMovement,
-                    planeNormal: motor.CharacterUp
+                    direction: _requestedMovement,
+                    surfaceNormal: Vector3.up
                 ) * _requestedMovement.magnitude;
 
                 // current vel on movement plane
@@ -221,11 +231,11 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
                 currentPlanarVelocity = Vector3.ProjectOnPlane
                 (
                     vector: currentVelocity,
-                    planeNormal: motor.CharacterUp
+                    planeNormal: Vector3.up
                 );
 
                 // calculate movement force
-                var movementForce = requestedPlanarMovement * airAcceleration * deltaTime;
+                var movementForce = airAcceleration * deltaTime * requestedPlanarMovement;
 
                 // add it to current planar vel for a target vel
                 var targetPlanarVelocity = currentPlanarVelocity + movementForce;
@@ -239,6 +249,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
                 // prevent air-climbing steep slopes (unintentional wall-riding)
                 if (motor.GroundingStatus.FoundAnyGround)
                 {
+                    // Debug.Log("Preventing air-climbing");
                     if(Vector3.Dot(movementForce, currentVelocity + movementForce) > 0f) // if moving in the same direction as resultant vel
                     {
                         // calculate obstruction normal
@@ -259,13 +270,13 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             }
             else if(_externalVelocityTimer <= 0f) // stop movement if you're not inputting anything
             {
-                Vector3 verticalVelocity = Vector3.Project(currentVelocity, motor.CharacterUp);
-                float haltLerpSpeed = 5f; // higher number = faster halt in air
+                Vector3 verticalVelocity = Vector3.Project(currentVelocity, Vector3.up);
+                float haltLerpSpeed = walkResponse / 2; // higher number = faster halt in air
                 currentVelocity = Vector3.Lerp(currentVelocity, verticalVelocity, haltLerpSpeed * deltaTime);
             }
             // gravity
             var terminalVel = 60f;
-            if (_externalVelocityTimer <= 0f) currentVelocity += currentVelocity.y > -terminalVel ? motor.CharacterUp * gravity * deltaTime : Vector3.zero;
+            if (_externalVelocityTimer <= 0f) currentVelocity += currentVelocity.y > -terminalVel ? Vector3.up * gravity * deltaTime : Vector3.zero;
         }
 
         if(_requestedJump)

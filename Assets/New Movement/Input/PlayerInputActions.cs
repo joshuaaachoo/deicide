@@ -162,6 +162,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Manual Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""61bbb89f-05c9-4f7a-bc63-a7c6637a2607"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -296,6 +305,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Primary Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3401b963-9b03-4a18-b0aa-b925f97a2930"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Manual Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -312,6 +332,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_Mobility = m_Gameplay.FindAction("Mobility", throwIfNotFound: true);
         m_Gameplay_Miscellaneous = m_Gameplay.FindAction("Miscellaneous", throwIfNotFound: true);
         m_Gameplay_PrimaryFire = m_Gameplay.FindAction("Primary Fire", throwIfNotFound: true);
+        m_Gameplay_ManualReload = m_Gameplay.FindAction("Manual Reload", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -400,6 +421,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Mobility;
     private readonly InputAction m_Gameplay_Miscellaneous;
     private readonly InputAction m_Gameplay_PrimaryFire;
+    private readonly InputAction m_Gameplay_ManualReload;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -443,6 +465,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/PrimaryFire".
         /// </summary>
         public InputAction @PrimaryFire => m_Wrapper.m_Gameplay_PrimaryFire;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/ManualReload".
+        /// </summary>
+        public InputAction @ManualReload => m_Wrapper.m_Gameplay_ManualReload;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -493,6 +519,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PrimaryFire.started += instance.OnPrimaryFire;
             @PrimaryFire.performed += instance.OnPrimaryFire;
             @PrimaryFire.canceled += instance.OnPrimaryFire;
+            @ManualReload.started += instance.OnManualReload;
+            @ManualReload.performed += instance.OnManualReload;
+            @ManualReload.canceled += instance.OnManualReload;
         }
 
         /// <summary>
@@ -528,6 +557,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PrimaryFire.started -= instance.OnPrimaryFire;
             @PrimaryFire.performed -= instance.OnPrimaryFire;
             @PrimaryFire.canceled -= instance.OnPrimaryFire;
+            @ManualReload.started -= instance.OnManualReload;
+            @ManualReload.performed -= instance.OnManualReload;
+            @ManualReload.canceled -= instance.OnManualReload;
         }
 
         /// <summary>
@@ -624,5 +656,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPrimaryFire(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Manual Reload" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnManualReload(InputAction.CallbackContext context);
     }
 }

@@ -23,6 +23,8 @@ MonoBehaviour:
   maxHealth: 200
   baseHealthRegen: 1
   armor: 0
+  passiveData: {fileID: 11400000, guid: aea9c2e215bc8a04f9360ac8d5ae2630, type: 2}
+  passiveLogicClassName: Hyperfocus
   primaryData: {fileID: 11400000, guid: 08041ad91f0f944439673543c93458a0, type: 2}
   primaryLogicClassName: Exodus
   secondaryData: {fileID: 11400000, guid: 097d68fe4a5428841a280499e1b16aeb, type: 2}

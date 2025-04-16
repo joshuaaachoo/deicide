@@ -26,6 +26,10 @@ public class CharacterDefinition : ScriptableObject
     public float baseHealthRegen;
     public float armor;
 
+    [Header("Passive")]
+    public PassiveData passiveData;
+    public string passiveLogicClassName;
+
     [Header("Primary Fire")]
     public PrimaryFireData primaryData;
     public string primaryLogicClassName;
@@ -39,4 +43,5 @@ public class CharacterDefinition : ScriptableObject
 
     public AbilityData miscData;
     public string miscLogicClassName;
+    
 }

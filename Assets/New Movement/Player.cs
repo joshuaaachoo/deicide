@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
         playerCharacter.Initialize(abilitySet, selectedCharacter);
         playerCamera.Initialize(playerCharacter.GetCameraTarget());
 
-        cameraSpring.Initialize();
+        // cameraSpring.Initialize();
 
         abilitySet.Initialize(this, playerCharacter, selectedCharacter);
     }
@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
         playerCamera.UpdatePosition(playerCharacter.GetCameraTarget());
         playerCamera.UpdateFOV(deltaTime);
 
-        cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
+        // cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
 
         // get character input and update it
         var characterInput = new CharacterInput
@@ -60,7 +60,8 @@ public class Player : MonoBehaviour
             Fire     = input.PrimaryFire.IsPressed(),
             Abil2    = input.SecondaryFire.WasPressedThisFrame(),
             Abil3    = input.Mobility.WasPressedThisFrame(),
-            Abil4    = input.Miscellaneous.WasPressedThisFrame()
+            Abil4    = input.Miscellaneous.WasPressedThisFrame(),
+            Reload   = input.ManualReload.WasPressedThisFrame()
         };
 
         playerCharacter.UpdateInput(characterInput);

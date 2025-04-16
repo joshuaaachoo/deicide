@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class AbilitySet : MonoBehaviour
 {
-    // private PassiveBasic passiveLogic;
+    private PassiveBasic passiveLogic;
+    private PassiveData passiveData;
 
     private PrimaryFireBasic primaryLogic;
     private PrimaryFireData primaryData;
@@ -22,16 +23,19 @@ public class AbilitySet : MonoBehaviour
         player = p;
         character = c;
 
+        passiveData = def.passiveData;
         primaryData = def.primaryData;
         secondaryData = def.secondaryData;
         mobilityData = def.mobilityData;
         miscData = def.miscData;
 
+        passiveLogic = CreatePassiveLogic(def.passiveLogicClassName);
         primaryLogic = CreatePrimaryLogic(def.primaryLogicClassName);
         secondaryLogic = CreateAbilityLogic(def.secondaryLogicClassName);
         mobilityLogic = CreateAbilityLogic(def.mobilityLogicClassName);
         miscLogic = CreateAbilityLogic(def.miscLogicClassName);
 
+        passiveLogic.Initialize(player, character, passiveData);
         primaryLogic.Initialize(player, character, player.GetCamera(), primaryData);
         secondaryLogic.Initialize(player, character, secondaryData);
         mobilityLogic.Initialize(player, character, mobilityData);
@@ -42,6 +46,16 @@ public class AbilitySet : MonoBehaviour
         misc = miscLogic as IMiscAbility;
     }
 
+    private PassiveBasic CreatePassiveLogic(string className)
+    {
+        Type type = Type.GetType(className);
+        if(type == null || !typeof(PassiveBasic).IsAssignableFrom(type))
+        {
+            Debug.LogError($"Invalid passive logic class: {className}");
+            return null;
+        }
+        return (PassiveBasic)Activator.CreateInstance(type);
+    }
     private PrimaryFireBasic CreatePrimaryLogic(string className)
     {
         Type type = Type.GetType(className);
@@ -65,13 +79,13 @@ public class AbilitySet : MonoBehaviour
 
     public void UpdateAbilities(float deltaTime)
     {
-        // passiveLogic.Tick(deltaTime);
+        passiveLogic.Tick(deltaTime);
         primaryLogic.Tick(deltaTime);
         secondary?.TickSecondary(deltaTime);
         mobility?.TickMobility(deltaTime);
         misc?.TickMisc(deltaTime);
     }
-    // public PassiveBasic GetPassive() => passiveLogic;
+    
     public void TryFirePrimary()
     {
         primaryLogic.Fire();
@@ -88,10 +102,12 @@ public class AbilitySet : MonoBehaviour
     {
         misc?.ActivateMisc();
     }
+    public PassiveData GetPassiveData() => passiveData;
     public PrimaryFireData GetPrimaryData() => primaryData;
     public AbilityData GetSecondaryData() => secondaryData;
     public AbilityData GetMobilityData() => mobilityData;
     public AbilityData GetMiscData() => miscData;
+    public PassiveBasic GetPassive() => passiveLogic;
     public PrimaryFireBasic GetPrimaryLogic() => primaryLogic;
     public AbilityBasic GetSecondaryLogic() => secondaryLogic;
     public AbilityBasic GetMobilityLogic() => mobilityLogic;

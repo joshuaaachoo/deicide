@@ -661,8 +661,8 @@ MonoBehaviour:
   playerCharacter: {fileID: 872171490}
   playerCamera: {fileID: 1688665002}
   abilitySet: {fileID: 302092383}
-  selectedCharacter: {fileID: 11400000, guid: 22d43c92fa9f1674b8c28d9b9483d01d, type: 2}
-  cameraSpring: {fileID: 1606011179}
+  selectedCharacter: {fileID: 11400000, guid: 60ee969c129540b4b97b57835b24f4b7, type: 2}
+  cameraSpring: {fileID: 0}
 --- !u!114 &302092383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3386,7 +3386,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1606011180}
-  - component: {fileID: 1606011179}
   m_Layer: 3
   m_Name: Spring
   m_TagString: Untagged
@@ -3394,21 +3393,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1606011179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1606011178}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70ee17ae7f0f1b44a9b3d0143860f5e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  halfLife: 0.075
-  frequency: 20
-  angularDisplacement: 1.25
 --- !u!4 &1606011180
 Transform:
   m_ObjectHideFlags: 0
