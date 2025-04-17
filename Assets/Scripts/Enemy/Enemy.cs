@@ -33,6 +33,7 @@ public abstract class Enemy : MonoBehaviour
         if(!isKnockedBack && playerTarget == null) UpdateAggro();
         // Debug.Log($"playerTarget.transform.position: {playerTarget.transform.position}");
 
+        Vector2 move = Vector2.up;
         Vector3 look = Vector3.zero;
 
         if (playerTarget != null)
@@ -44,8 +45,6 @@ public abstract class Enemy : MonoBehaviour
 
         Quaternion lookQuat = Quaternion.LookRotation(look);
         // Debug.Log($"lookQuat: {lookQuat}");
-
-        Vector2 move = Vector2.up;
 
         var input = new EnemyInput
         {
