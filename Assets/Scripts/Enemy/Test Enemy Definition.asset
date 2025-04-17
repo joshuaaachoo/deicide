@@ -23,3 +23,4 @@ MonoBehaviour:
   maxHealth: 100
   baseHealthRegen: 1
   armor: 0
+  detectionRadius: 2000
