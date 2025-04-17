@@ -43,7 +43,11 @@ public class Player : MonoBehaviour
         var cameraTarget = playerCharacter.GetCameraTarget();
 
         // get camera input and update its rotation
-        var cameraInput = new CameraInput { Look = input.Look.ReadValue<Vector2>() };
+        var cameraInput = new CameraInput
+        {
+            Look = input.Look.ReadValue<Vector2>()
+        };
+
         playerCamera.UpdateRotation(cameraInput);
         playerCamera.UpdatePosition(playerCharacter.GetCameraTarget());
         playerCamera.UpdateFOV(deltaTime);

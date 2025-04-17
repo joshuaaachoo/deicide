@@ -29,31 +29,27 @@ public abstract class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // debug results:
-        // playerTarget is updated correctly
-        // playerTarget position is updated correctly
-        // look vector is updated correctly
-        // look quaternion is updated correctly
-        // everything is updated correctly
-        // The enemy is Just Suicidal for some reason
-
         var deltaTime = Time.deltaTime;
         if(!isKnockedBack && playerTarget == null) UpdateAggro();
-        Debug.Log($"playerTarget.transform.position: {playerTarget.transform.position}");
+        // Debug.Log($"playerTarget.transform.position: {playerTarget.transform.position}");
 
         Vector3 look = Vector3.zero;
 
         if (playerTarget != null)
         {
-            look = (playerTarget.transform.position - transform.position).normalized;
-            look.y = 0f;
+            look = playerTarget.transform.position - character.transform.position;
+            look.Normalize();
         }
+        // Debug.Log($"look: {look}");
+
+        Quaternion lookQuat = Quaternion.LookRotation(look);
+        // Debug.Log($"lookQuat: {lookQuat}");
 
         Vector2 move = Vector2.up;
 
         var input = new EnemyInput
         {
-            Rotation = Quaternion.LookRotation(look),
+            Rotation = lookQuat,
             Move = move,
             Jump = false, // temp
             Attack = false // temp
@@ -82,15 +78,12 @@ public abstract class Enemy : MonoBehaviour
             }
         }
     }
-    /*
     public void ApplyKnockback(Vector3 direction, float force)
     {
-        if(!isKnockedBack)
-        {
-            float duration = (force / enemyDefinition.mass) * 0.05f;
-            StartCoroutine(KnockbackRoutine(direction.normalized, force, duration));
-        }
+        float duration = (force / enemyDefinition.mass) * 0.05f;
+        character.InjectExternalVelocity(direction * force, duration);
     }
+    /*
     private IEnumerator KnockbackRoutine(Vector3 direction, float force, float duration)
     {
         isKnockedBack = true;

@@ -65,7 +65,7 @@ public class CorrectiveAction : AbilityBasic, ISecondaryAbility
                     default:
                         Vector3 knockDirection = _lungeDirection.normalized;
                         character.InjectExternalVelocity(_lungeDirection * _lungeSpeed / (data.activeTime / 0.05f), 0.05f); // this equation stinks
-                        // enemy.ApplyKnockback(knockDirection, punchForce);
+                        enemy.ApplyKnockback(knockDirection + Vector3.up, punchForce);
                         break;
                 }
             }

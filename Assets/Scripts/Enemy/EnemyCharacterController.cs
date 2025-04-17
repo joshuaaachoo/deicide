@@ -80,6 +80,9 @@ public class EnemyCharacterController : MonoBehaviour, ICharacterController
             {
                 _externalVelocity = Vector3.zero;
             }
+            // var terminalVel = 60f;
+            // currentVelocity += currentVelocity.y > -terminalVel ? Vector3.up * gravity * deltaTime : Vector3.zero;
+            
             return;
         }
 
@@ -184,6 +187,14 @@ public class EnemyCharacterController : MonoBehaviour, ICharacterController
             }
         }
     }
+
+    public void InjectExternalVelocity(Vector3 velocity, float duration)
+    {
+        _externalVelocity = velocity;
+        _externalVelocityTimer = duration;
+        motor.ForceUnground(time: duration);
+    }
+
     #region Probably don't touch any of this?
     public void BeforeCharacterUpdate(float deltaTime)
     {
@@ -219,4 +230,6 @@ public class EnemyCharacterController : MonoBehaviour, ICharacterController
 
     }
     #endregion
+
+    public KinematicCharacterMotor GetMotor() => motor;
 }
