@@ -30,4 +30,5 @@ public class EnemyDefinition : ScriptableObject
     public float maxHealth;
     public float baseHealthRegen;
     public float armor;
+    public float detectionRadius;
 }

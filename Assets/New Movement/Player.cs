@@ -64,6 +64,7 @@ public class Player : MonoBehaviour
             Reload   = input.ManualReload.WasPressedThisFrame()
         };
 
+        // Debug.Log($"Player move vector: {characterInput.Move}");
         playerCharacter.UpdateInput(characterInput);
         playerCharacter.UpdateBody(deltaTime);
 

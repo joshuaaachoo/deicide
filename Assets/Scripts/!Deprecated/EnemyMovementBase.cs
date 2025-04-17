@@ -1,7 +1,7 @@
 using KinematicCharacterController;
 using UnityEngine;
 
-public struct EnemyInput
+public struct EnemyInputObsolete
 {
     public Quaternion Rotation;
     public Vector2 MoveGrounded;

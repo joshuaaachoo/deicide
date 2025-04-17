@@ -8,12 +8,12 @@ using UnityEngine.AI;
 
 public abstract class Enemy : MonoBehaviour
 {
-    private NavMeshAgent navAgent;
+    [SerializeField] private EnemyCharacterController character;
     [SerializeField] public EnemyDefinition enemyDefinition;
 
-    // physics
-    private Vector3 currentVelocity;
-    private float gravity = -10f;
+    // ai
+    private float detectionRadius;
+    private PlayerCharacter playerTarget;
 
     private bool isKnockedBack;
 
@@ -22,56 +22,67 @@ public abstract class Enemy : MonoBehaviour
     {
         // motor = motor == null ? gameObject.AddComponent<EnemyCharacterMotor>() : gameObject.GetComponent<EnemyCharacterMotor>();
         // motor.Initialize(enemyDefinition);
-
-        navAgent = GetComponent<NavMeshAgent>();
+        character.Initialize(enemyDefinition);
+        detectionRadius = enemyDefinition.detectionRadius;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // debug results:
+        // playerTarget is updated correctly
+        // playerTarget position is updated correctly
+        // look vector is updated correctly
+        // look quaternion is updated correctly
+        // everything is updated correctly
+        // The enemy is Just Suicidal for some reason
+
         var deltaTime = Time.deltaTime;
-        if(enemyDefinition.movementType == EnemyDefinition.MovementType.Grounded)
+        if(!isKnockedBack && playerTarget == null) UpdateAggro();
+        Debug.Log($"playerTarget.transform.position: {playerTarget.transform.position}");
+
+        Vector3 look = Vector3.zero;
+
+        if (playerTarget != null)
         {
-            Ray wallRay = new Ray(transform.position, currentVelocity.normalized);
-            bool hittingSlope = Physics.Raycast(wallRay, out RaycastHit hitSlope, 0.5f, LayerMask.GetMask("Terrain"));
-
-            Vector3 normalGround = currentVelocity.normalized == Vector3.zero ? Vector3.down : -hitSlope.normal;
-            Ray groundRay = new Ray(transform.position, normalGround);
-            bool onGround = Physics.Raycast(groundRay, out RaycastHit hitGround, 0.5f, LayerMask.GetMask("Terrain", "Platform", "Wall"));
-            // float radius = 0.5f;
-
-            // bool onGround = Physics.Raycast(ray, out RaycastHit hitGround, 0.1f, LayerMask.GetMask("Terrain", "Platform", "Wall"));
-            // bool onGround = Physics.SphereCast(transform.position, radius, Vector3.down, out RaycastHit hitGround, 0.5f, LayerMask.GetMask("Terrain", "Platform", "Wall"));
-            // if (!onGround)
-            // {
-            //     transform.position += Vector3.up * gravity * deltaTime;
-            // }
-            // else if (!isKnockedBack && !navAgent.enabled) navAgent.enabled = true;
-
-            // apply gravity if not on ground
-
-            if (!onGround) // dont change to while
-            {
-                if (!hittingSlope) currentVelocity.y += gravity * deltaTime;
-                else
-                {
-                    currentVelocity = Vector3.ProjectOnPlane(currentVelocity, hitSlope.normal);
-                }
-            }
-            // enable navAgent if on ground and not knocked back
-            else if (!isKnockedBack)
-            {
-                currentVelocity.y = 0f;
-                navAgent.enabled = true;
-            }
-            else currentVelocity.y = 0f;
+            look = (playerTarget.transform.position - transform.position).normalized;
+            look.y = 0f;
         }
 
-        if(!navAgent.enabled) transform.position += currentVelocity;
-        currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, 1f - Mathf.Exp(-25f * deltaTime));
+        Vector2 move = Vector2.up;
+
+        var input = new EnemyInput
+        {
+            Rotation = Quaternion.LookRotation(look),
+            Move = move,
+            Jump = false, // temp
+            Attack = false // temp
+        };
+
+        character.UpdateInput(input);
     }
 
-    public NavMeshAgent GetNavAgent() => navAgent;
+    void UpdateAggro()
+    {
+        if (playerTarget != null)
+        {
+            // Debug.Log($"{enemyDefinition.enemyName} already has a player target");
+            return; // if already have target, don't update aggro
+        }
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, LayerMask.GetMask("Player")); // gets all colliders in sphere with detectionRadius
+
+        foreach (Collider hit in hits)
+        {
+            playerTarget = hit.GetComponent<PlayerCharacter>(); // get Player component in each hit
+            if (playerTarget != null)
+            {
+                Debug.Log($"{enemyDefinition.enemyName} found a player");
+                break; // if it worked, break
+            }
+        }
+    }
+    /*
     public void ApplyKnockback(Vector3 direction, float force)
     {
         if(!isKnockedBack)
@@ -83,7 +94,6 @@ public abstract class Enemy : MonoBehaviour
     private IEnumerator KnockbackRoutine(Vector3 direction, float force, float duration)
     {
         isKnockedBack = true;
-        navAgent.enabled = false;
 
         float timer = 0f;
         float maxDistancePerFrame;
@@ -113,4 +123,7 @@ public abstract class Enemy : MonoBehaviour
 
         isKnockedBack = false;
     }
+    */
+    public EnemyCharacterController GetEnemyCharacter() => character;
+    public EnemyDefinition GetEnemyDefinition() => enemyDefinition;
 }
