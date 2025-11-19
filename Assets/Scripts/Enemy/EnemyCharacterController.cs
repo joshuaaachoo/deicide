@@ -18,7 +18,7 @@ public class EnemyCharacterController : MonoBehaviour, ICharacterController
     private float airAcceleration;
 
     private float jumpSpeed;
-    private float gravity = -90f;
+    private float gravity = -9.81f;
 
     private float mass;
 
@@ -80,9 +80,11 @@ public class EnemyCharacterController : MonoBehaviour, ICharacterController
             {
                 _externalVelocity = Vector3.zero;
             }
-            // var terminalVel = 60f;
-            // currentVelocity += currentVelocity.y > -terminalVel ? Vector3.up * gravity * deltaTime : Vector3.zero;
-            
+
+            // Apply gravity during external velocity to prevent phasing through floor
+            var terminalVel = 60f;
+            currentVelocity += currentVelocity.y > -terminalVel ? Vector3.up * gravity * deltaTime : Vector3.zero;
+
             return;
         }
 
