@@ -18,7 +18,7 @@ public class EnemyCharacterController : MonoBehaviour, ICharacterController
     private float airAcceleration;
 
     private float jumpSpeed;
-    private float gravity = -45f;
+    private float gravity = -90f;
 
     private float mass;
 
