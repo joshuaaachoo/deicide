@@ -165,7 +165,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   DiscreteCollisionEvents: 0
   StepHandling: 1
-  MaxStepHeight: 0.5
+  MaxStepHeight: 1.5
   AllowSteppingWithoutStableGrounding: 0
   MinRequiredStepDepth: 0.1
   LedgeAndDenivelationHandling: 1
@@ -209,4 +209,4 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   character: {fileID: 1367638872140821766}
-  enemyDefinition: {fileID: 0}
+  enemyDefinition: {fileID: 11400000, guid: 2e7a6965c8d9b164c9761fbeb3235a65, type: 2}
